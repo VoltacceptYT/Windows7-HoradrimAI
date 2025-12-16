@@ -149,16 +149,27 @@
       // Use relative path since everything is on the same domain
       const apiUrl = '/api/chat';
       
-      // Show loading indicator
-      const loadingId = 'loading-' + Date.now();
-      const loadingMessage = `<div id="${loadingId}" class="loading-indicator">HoradrimAI is thinking...</div>`;
-      addMessage(loadingMessage, "assistant", false);
+      // Create a single message container that will be updated
+      const messageId = 'msg-' + Date.now();
+      const profile = document.createElement('div');
+      profile.classList.add('profile', 'assistant-profile');
+      profile.innerHTML = `<img src="./assets/icon.png" alt="AI Profile Picture" class="profile-picture"><p class="name">HoradrimAI</p>`;
+      
+      const messageElement = document.createElement("div");
+      messageElement.id = messageId;
+      messageElement.classList.add("message", "assistant-message");
+      messageElement.innerHTML = '<span class="typing-indicator"><span>.</span><span>.</span><span>.</span></span>';
+      
+      const messages = document.getElementById("messages");
+      messages.appendChild(profile);
+      messages.appendChild(messageElement);
+      messages.scrollTop = messages.scrollHeight;
       
       // Reduce max tokens for low memory mode
       const maxTokens = lowMemoryMode ? 1024 : 2048;
       
       // Build messages array following Groq format
-      const messages = [
+      const messagesArray = [
         {
           role: "system",
           content: `You are HoradrimAI, a Diablo II: Lord of Destruction AI assistant integrated with the Diablo II Wiki (https://wiki.diablo.run/). 
@@ -186,21 +197,21 @@
       // Add chat history (last 10 messages for context)
       const historyContext = chatHistory.slice(-10);
       historyContext.forEach(msg => {
-        messages.push({
+        messagesArray.push({
           role: msg.role,
           content: msg.text
         });
       });
       
       // Add the current user message
-      messages.push({
+      messagesArray.push({
         role: "user",
         content: message
       });
 
       const requestData = {
         model: "llama-3.3-70b-versatile", // Groq model
-        messages: messages,
+        messages: messagesArray,
         max_tokens: maxTokens,
         temperature: 0.7,
         stream: false
@@ -216,12 +227,6 @@
           },
           body: JSON.stringify(requestData)
         });
-
-        // Remove loading indicator
-        const loadingElement = document.getElementById(loadingId);
-        if (loadingElement) {
-          loadingElement.remove();
-        }
 
         console.log('Response status:', response.status);
         
@@ -243,7 +248,18 @@
             errorMessage = errorText || `HTTP error ${response.status}`;
           }
           
-          addMessage(`⚠️ Error: ${errorMessage}`, "assistant");
+          // Update the existing message with error
+          const botMessage = `⚠️ Error: ${errorMessage}`;
+          const formattedMessage = marked.parse(botMessage);
+          document.getElementById(messageId).innerHTML = formattedMessage;
+          
+          // Save error message to history
+          chatHistory.push({ role: "assistant", text: botMessage });
+          if (chatHistory.length > MAX_HISTORY) {
+            chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+          }
+          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+          
           return;
         }
 
@@ -252,23 +268,58 @@
 
         if (result.choices && result.choices[0] && result.choices[0].message) {
           const botMessage = result.choices[0].message.content.trim();
-          addMessage(botMessage, "assistant");
+          const formattedMessage = marked.parse(botMessage);
+          document.getElementById(messageId).innerHTML = formattedMessage;
+          
+          // Save to history
+          chatHistory.push({ role: "assistant", text: botMessage });
+          if (chatHistory.length > MAX_HISTORY) {
+            chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+          }
+          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
         } else if (result.error) {
-          addMessage(`⚠️ API Error: ${result.error.message || result.error}`, "assistant");
+          const errorMessage = `⚠️ API Error: ${result.error.message || result.error}`;
+          const formattedMessage = marked.parse(errorMessage);
+          document.getElementById(messageId).innerHTML = formattedMessage;
+          
+          chatHistory.push({ role: "assistant", text: errorMessage });
+          if (chatHistory.length > MAX_HISTORY) {
+            chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+          }
+          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
         } else {
-          addMessage("I'm sorry, I received an unexpected response. Please try again.", "assistant");
+          const errorMessage = "I'm sorry, I received an unexpected response. Please try again.";
+          const formattedMessage = marked.parse(errorMessage);
+          document.getElementById(messageId).innerHTML = formattedMessage;
+          
+          chatHistory.push({ role: "assistant", text: errorMessage });
+          if (chatHistory.length > MAX_HISTORY) {
+            chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+          }
+          localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
         }
       } catch (error) {
         console.error("Fetch Error:", error);
         
-        // Remove loading indicator
-        const loadingElement = document.getElementById(loadingId);
-        if (loadingElement) {
-          loadingElement.remove();
+        const errorMessage = `⚠️ Network Error: ${error.message}. Please check your connection.`;
+        const formattedMessage = marked.parse(errorMessage);
+        
+        if (document.getElementById(messageId)) {
+          document.getElementById(messageId).innerHTML = formattedMessage;
+        } else {
+          // If message element was removed, add a new one
+          addMessage(errorMessage, "assistant");
         }
         
-        addMessage(`⚠️ Network Error: ${error.message}. Please check your connection.`, "assistant");
+        chatHistory.push({ role: "assistant", text: errorMessage });
+        if (chatHistory.length > MAX_HISTORY) {
+          chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+        }
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
       }
+      
+      // Scroll to bottom
+      messages.scrollTop = messages.scrollHeight;
     }
 
     function getOperatorName() {
@@ -300,6 +351,47 @@
   </script>
   
   <style>
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+    }
+    
+    .typing-indicator span {
+      height: 8px;
+      width: 8px;
+      margin: 0 2px;
+      background-color: #666;
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 0.4;
+      animation: typing 1.4s infinite both;
+    }
+    
+    .typing-indicator span:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 100% {
+        opacity: 0.4;
+        transform: translateY(0);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(-3px);
+      }
+    }
+    
+    /* Rest of your existing styles */
     .loading-indicator {
       color: #666;
       font-style: italic;
@@ -355,6 +447,8 @@
     }
     
     .user-message {
+      background: #007bff;
+      color: white;
       margin-left: auto;
       text-align: left;
     }
@@ -393,6 +487,7 @@
     }
     
     .assistant-message th {
+      background: #f2f2f2;
       font-weight: bold;
     }
     
@@ -414,6 +509,7 @@
     }
     
     .confirm-modal-content {
+      background: white;
       padding: 20px;
       border-radius: 10px;
       max-width: 400px;
@@ -426,6 +522,16 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+    }
+    
+    #confirmClearYes {
+      background: #dc3545;
+      color: white;
+    }
+    
+    #confirmClearNo {
+      background: #6c757d;
+      color: white;
     }
   </style>
 </body>

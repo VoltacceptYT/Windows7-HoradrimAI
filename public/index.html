@@ -1,38 +1,31 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <title>HoradrimAI</title>
   <meta name="author" content="VoltacceptYT">
-  <meta name="keywords" content="HoradrimAI, AI Assistant, DeepSeek, Chatbot, AI, Assistant, ChatGPT, Diablo II">
-  <meta name="description" content="HoradrimAI - Your Diablo II: Lord of Destruction AI Assistant powered by DeepSeek.">
+  <meta name="keywords" content="HoradrimAI, AI Assistant, Groq, Chatbot, AI, Assistant, ChatGPT, Diablo II">
+  <meta name="description" content="HoradrimAI - Your Diablo II: Lord of Destruction AI Assistant powered by Groq.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="./assets/icon.png">
   <link id="theme-link" rel="stylesheet" href="./assets/light-theme.css">
   <script src="https://cdn.jsdelivr.net/npm/marked@16.0.0/lib/marked.umd.min.js"></script>
 </head>
-
 <body>
   <div id="chat-container">
     <div id="chat-box">
       <div id="messages"></div>
     </div>
     <form id="chat-form">
-      <textarea type="text" id="user-input" placeholder="Type your message here..." required=""
-        style="white-space: pre-wrap;"></textarea>
+      <textarea type="text" id="user-input" placeholder="Type your message here..." required="" style="white-space: pre-wrap;"></textarea>
       <button type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path
-            d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z">
-          </path>
+          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"></path>
         </svg>
       </button>
       <button type="button" id="clear-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path
-            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0">
-          </path>
+          <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
         </svg>
       </button>
     </form>
@@ -89,9 +82,9 @@
       event.preventDefault();
       const userInput = document.getElementById("user-input").value;
       if (!userInput.trim()) return;
-
+      
       addMessage(userInput, "user");
-      fetchDeepSeekResponse(userInput);
+      fetchGroqResponse(userInput);
       document.getElementById("user-input").value = "";
     });
 
@@ -145,33 +138,51 @@
         }
         localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
       }
-
+      
       // Scroll to bottom
       messages.scrollTop = messages.scrollHeight;
     }
 
-    async function fetchDeepSeekResponse(message) {
-      console.log(`Sending message to DeepSeek API: ${message}`);
-
+    async function fetchGroqResponse(message) {
+      console.log(`Sending message to Groq API: ${message}`);
+      
       // Use relative path since everything is on the same domain
-      const apiUrl = '/api/deepseek';
-
+      const apiUrl = '/api/chat';
+      
       // Show loading indicator
       const loadingId = 'loading-' + Date.now();
       const loadingMessage = `<div id="${loadingId}" class="loading-indicator">HoradrimAI is thinking...</div>`;
       addMessage(loadingMessage, "assistant", false);
-
+      
       // Reduce max tokens for low memory mode
       const maxTokens = lowMemoryMode ? 1024 : 2048;
-
-      // Build messages array following DeepSeek format
+      
+      // Build messages array following Groq format
       const messages = [
         {
           role: "system",
-          content: `You are HoradrimAI, a Diablo II: Lord of Destruction AI assistant integrated with the Diablo II Wiki (https://wiki.diablo.run/); deliver precise, consistent information about characters, skills, items, quests, and gameplay systems—format code and builds cleanly, include relevant context, exclude filler, and address the player as ${getOperatorName()}.`
+          content: `You are HoradrimAI, a Diablo II: Lord of Destruction AI assistant integrated with the Diablo II Wiki (https://wiki.diablo.run/). 
+          
+          **Guidelines:**
+          1. Deliver precise, consistent information about Diablo II characters, skills, items, quests, and gameplay systems
+          2. Format code and builds cleanly using markdown
+          3. Include relevant context but exclude filler
+          4. Address the player as ${getOperatorName()}
+          5. When discussing builds, include skill point allocation, stat distribution, and gear recommendations
+          6. For items, mention where they can be found and their drop rates when relevant
+          7. Keep responses focused and helpful
+          
+          **Diablo II: Lord of Destruction Expertise:**
+          - Classes: Amazon, Assassin, Barbarian, Druid, Necromancer, Paladin, Sorceress
+          - Acts: I-V and Baal
+          - Difficulties: Normal, Nightmare, Hell
+          - Runewords, Sets, Uniques, Rares
+          - Cube Recipes
+          - Mercenaries
+          - Ubers and Pandemonium Event`
         }
       ];
-
+      
       // Add chat history (last 10 messages for context)
       const historyContext = chatHistory.slice(-10);
       historyContext.forEach(msg => {
@@ -180,7 +191,7 @@
           content: msg.text
         });
       });
-
+      
       // Add the current user message
       messages.push({
         role: "user",
@@ -188,7 +199,7 @@
       });
 
       const requestData = {
-        model: "deepseek-chat",
+        model: "llama-3.3-70b-versatile", // Groq model
         messages: messages,
         max_tokens: maxTokens,
         temperature: 0.7,
@@ -197,8 +208,7 @@
 
       try {
         console.log('Sending request to:', apiUrl);
-        console.log('Request data:', JSON.stringify(requestData, null, 2));
-
+        
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -214,7 +224,7 @@
         }
 
         console.log('Response status:', response.status);
-
+        
         if (!response.ok) {
           let errorText;
           try {
@@ -223,22 +233,22 @@
           } catch (e) {
             errorText = 'Failed to read error response';
           }
-
+          
           // Try to parse JSON error if possible
           let errorMessage = `HTTP error ${response.status}`;
           try {
             const errorJson = JSON.parse(errorText);
-            errorMessage = errorJson.error || errorJson.message || errorText;
+            errorMessage = errorJson.error?.message || errorJson.details?.error || errorText;
           } catch {
             errorMessage = errorText || `HTTP error ${response.status}`;
           }
-
+          
           addMessage(`⚠️ Error: ${errorMessage}`, "assistant");
           return;
         }
 
         const result = await response.json();
-        console.log("API Response received:", result);
+        console.log("Groq API Response:", result);
 
         if (result.choices && result.choices[0] && result.choices[0].message) {
           const botMessage = result.choices[0].message.content.trim();
@@ -250,19 +260,19 @@
         }
       } catch (error) {
         console.error("Fetch Error:", error);
-
+        
         // Remove loading indicator
         const loadingElement = document.getElementById(loadingId);
         if (loadingElement) {
           loadingElement.remove();
         }
-
+        
         addMessage(`⚠️ Network Error: ${error.message}. Please check your connection.`, "assistant");
       }
     }
 
     function getOperatorName() {
-      return localStorage.getItem('displayName') || 'Guest';
+      return localStorage.getItem('displayName') || 'Nephalem';
     }
 
     // ---- Confirm Modal Logic ----
@@ -288,7 +298,7 @@
     // Initial render
     renderChatHistory();
   </script>
-
+  
   <style>
     .loading-indicator {
       color: #666;
@@ -297,8 +307,140 @@
       background: #f5f5f5;
       border-radius: 8px;
       margin: 10px 0;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    .profile {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+    
+    .profile-picture {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+    }
+    
+    .user-profile {
+      justify-content: flex-end;
+      text-align: right;
+    }
+    
+    .assistant-profile {
+      justify-content: flex-start;
+      text-align: left;
+    }
+    
+    .name {
+      font-weight: bold;
+      margin: 0;
+      font-size: 0.9em;
+    }
+    
+    .message {
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 80%;
+      margin: 5px 0;
+      line-height: 1.5;
+    }
+    
+    .user-message {
+      background: #007bff;
+      color: white;
+      margin-left: auto;
+      text-align: left;
+    }
+    
+    .assistant-message {
+      background: #f0f0f0;
+      color: #333;
+      margin-right: auto;
+    }
+    
+    .assistant-message pre {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    
+    .assistant-message code {
+      background: #f4f4f4;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .assistant-message table {
+      border-collapse: collapse;
+      margin: 10px 0;
+    }
+    
+    .assistant-message th,
+    .assistant-message td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .assistant-message th {
+      background: #f2f2f2;
+      font-weight: bold;
+    }
+    
+    .confirm-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .confirm-modal.active {
+      display: flex;
+    }
+    
+    .confirm-modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    .confirm-modal-content button {
+      margin: 10px;
+      padding: 8px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    #confirmClearYes {
+      background: #dc3545;
+      color: white;
+    }
+    
+    #confirmClearNo {
+      background: #6c757d;
+      color: white;
     }
   </style>
 </body>
-
 </html>

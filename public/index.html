@@ -14,15 +14,20 @@
   <!-- Sidebar for Chat History -->
   <div id="sidebar">
     <div class="sidebar-header">
+      <button id="mobile-toggle-sidebar" class="sidebar-btn mobile-only" title="Toggle Sidebar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/>
+        </svg>
+      </button>
       <h3>Chat History</h3>
       <button id="new-chat-btn" class="sidebar-btn" title="New Chat">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
         </svg>
       </button>
-      <button id="toggle-sidebar" class="sidebar-btn" title="Toggle Sidebar">
+      <button id="toggle-sidebar" class="sidebar-btn desktop-only" title="Toggle Sidebar">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/>
+          <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
         </svg>
       </button>
     </div>
@@ -30,6 +35,9 @@
       <!-- Chat sessions will be dynamically added here -->
     </div>
   </div>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
   <!-- Main Chat Container -->
   <div id="chat-container">
@@ -55,8 +63,45 @@
   <div id="confirmClearModal" class="confirm-modal">
     <div class="confirm-modal-content">
       <p>Are you sure you want to clear the chat history?</p>
-      <button id="confirmClearYes">Yes</button>
-      <button id="confirmClearNo">No</button>
+      <div class="modal-buttons">
+        <button id="confirmClearYes">Yes</button>
+        <button id="confirmClearNo">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Session Confirmation Modal -->
+  <div id="confirmDeleteModal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p>Are you sure you want to delete this chat?</p>
+      <div class="modal-buttons">
+        <button id="confirmDeleteYes">Yes</button>
+        <button id="confirmDeleteNo">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rename Session Modal -->
+  <div id="renameModal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p>Enter new chat name:</p>
+      <input type="text" id="renameInput" placeholder="Chat name..." maxlength="50">
+      <div class="modal-buttons">
+        <button id="renameConfirm">Save</button>
+        <button id="renameCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Chat Modal -->
+  <div id="newChatModal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p>Start a new chat?</p>
+      <p class="modal-subtitle">Current conversation will be saved automatically.</p>
+      <div class="modal-buttons">
+        <button id="newChatConfirm">New Chat</button>
+        <button id="newChatCancel">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -75,10 +120,11 @@
     // Get or initialize sessions from localStorage
     let chatSessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
     let currentSessionId = localStorage.getItem('currentSessionId') || null;
+    let pendingSession = null; // For new chat button
     
     // Initialize if no sessions exist
     if (chatSessions.length === 0) {
-      createNewSession();
+      createNewSession(true); // Create initial session immediately
     } else if (!currentSessionId) {
       currentSessionId = chatSessions[0].id;
       localStorage.setItem('currentSessionId', currentSessionId);
@@ -88,33 +134,62 @@
       return chatSessions.find(session => session.id === currentSessionId);
     }
 
-    function createNewSession() {
+    function createNewSession(immediate = false) {
       const sessionId = 'session-' + Date.now();
       const newSession = {
         id: sessionId,
         name: `Chat ${chatSessions.length + 1}`,
         timestamp: Date.now(),
         messages: [],
-        lastMessage: 'New chat'
+        lastMessage: 'No messages yet'
       };
       
-      chatSessions.unshift(newSession); // Add to beginning
-      currentSessionId = sessionId;
-      
-      // Limit number of sessions
-      if (chatSessions.length > MAX_SESSIONS) {
-        chatSessions = chatSessions.slice(0, MAX_SESSIONS);
+      if (immediate) {
+        chatSessions.unshift(newSession);
+        currentSessionId = sessionId;
+        
+        if (chatSessions.length > MAX_SESSIONS) {
+          chatSessions = chatSessions.slice(0, MAX_SESSIONS);
+        }
+        
+        localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
+        localStorage.setItem('currentSessionId', currentSessionId);
+        
+        renderChatHistory();
+        renderChatSessions();
+        return newSession;
+      } else {
+        // Store as pending session (will be created when first message is sent)
+        pendingSession = newSession;
+        return null;
       }
-      
-      localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
-      localStorage.setItem('currentSessionId', currentSessionId);
-      
-      renderChatHistory();
-      renderChatSessions();
-      return newSession;
+    }
+
+    function activatePendingSession() {
+      if (pendingSession) {
+        // Check if pending session already exists (to avoid duplicates)
+        const existingSession = chatSessions.find(s => s.id === pendingSession.id);
+        if (!existingSession) {
+          chatSessions.unshift(pendingSession);
+          currentSessionId = pendingSession.id;
+          
+          if (chatSessions.length > MAX_SESSIONS) {
+            chatSessions = chatSessions.slice(0, MAX_SESSIONS);
+          }
+          
+          localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
+          localStorage.setItem('currentSessionId', currentSessionId);
+          
+          renderChatSessions();
+        }
+        pendingSession = null;
+      }
     }
 
     function deleteSession(sessionId) {
+      const sessionToDelete = chatSessions.find(session => session.id === sessionId);
+      if (!sessionToDelete) return;
+      
       chatSessions = chatSessions.filter(session => session.id !== sessionId);
       localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
       
@@ -125,7 +200,7 @@
           localStorage.setItem('currentSessionId', currentSessionId);
           renderChatHistory();
         } else {
-          createNewSession();
+          createNewSession(true);
         }
       }
       
@@ -137,20 +212,72 @@
       localStorage.setItem('currentSessionId', sessionId);
       renderChatHistory();
       renderChatSessions();
+      hideMobileSidebar();
     }
 
     function updateSessionName(sessionId, newName) {
       const session = chatSessions.find(s => s.id === sessionId);
       if (session) {
-        session.name = newName;
+        session.name = newName.trim() || session.name;
         localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
         renderChatSessions();
       }
     }
 
+    function generateSessionNameFromMessage(message) {
+      // Generate a meaningful session name from the first message
+      const messageLower = message.toLowerCase();
+      
+      // Diablo II specific keywords for better naming
+      const keywords = {
+        'build': 'Build',
+        'character': 'Character',
+        'item': 'Item',
+        'skill': 'Skill',
+        'quest': 'Quest',
+        'runeword': 'Runeword',
+        'unique': 'Unique',
+        'set': 'Set',
+        'farming': 'Farming',
+        'leveling': 'Leveling',
+        'pvp': 'PvP',
+        'merc': 'Mercenary',
+        'uber': 'Uber',
+        'baal': 'Baal',
+        'diablo': 'Diablo',
+        'mephisto': 'Mephisto',
+        'andariel': 'Andariel',
+        'duriel': 'Duriel'
+      };
+      
+      // Extract first meaningful sentence or 5 words
+      const words = message.split(' ').slice(0, 8);
+      
+      // Check for keywords to create better name
+      let keywordFound = null;
+      for (const [key, value] of Object.entries(keywords)) {
+        if (messageLower.includes(key)) {
+          keywordFound = value;
+          break;
+        }
+      }
+      
+      if (keywordFound) {
+        return `${keywordFound}: ${words.slice(0, 4).join(' ')}...`;
+      }
+      
+      // Default: first few words
+      return words.join(' ') + (message.split(' ').length > 8 ? '...' : '');
+    }
+
     function renderChatSessions() {
       const sessionsContainer = document.getElementById('chat-sessions');
       sessionsContainer.innerHTML = '';
+      
+      if (chatSessions.length === 0) {
+        sessionsContainer.innerHTML = '<div class="no-sessions">No chats yet</div>';
+        return;
+      }
       
       chatSessions.forEach(session => {
         const sessionElement = document.createElement('div');
@@ -159,19 +286,20 @@
           sessionElement.classList.add('active');
         }
         
-        const sessionName = session.name || `Chat ${chatSessions.indexOf(session) + 1}`;
+        const sessionName = session.name || `Chat`;
         const lastMessage = session.messages.length > 0 
-          ? session.messages[session.messages.length - 1].text.substring(0, 30) + '...'
+          ? (session.lastMessage || session.messages[session.messages.length - 1].text.substring(0, 30) + '...')
           : 'No messages yet';
         
         const date = new Date(session.timestamp);
         const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateString = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
         
         sessionElement.innerHTML = `
           <div class="session-content" data-session-id="${session.id}">
             <div class="session-name">${sessionName}</div>
             <div class="session-preview">${lastMessage}</div>
-            <div class="session-time">${timeString}</div>
+            <div class="session-time">${dateString} ${timeString}</div>
           </div>
           <button class="session-delete-btn" data-session-id="${session.id}" title="Delete chat">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -192,19 +320,13 @@
         // Add delete button event
         sessionElement.querySelector('.session-delete-btn').addEventListener('click', (e) => {
           e.stopPropagation();
-          if (confirm('Are you sure you want to delete this chat?')) {
-            deleteSession(session.id);
-          }
+          showDeleteConfirm(session.id);
         });
         
         // Double click to rename
         sessionElement.querySelector('.session-name').addEventListener('dblclick', (e) => {
           e.stopPropagation();
-          const currentName = session.name || `Chat ${chatSessions.indexOf(session) + 1}`;
-          const newName = prompt('Enter new chat name:', currentName);
-          if (newName && newName.trim() !== '') {
-            updateSessionName(session.id, newName.trim());
-          }
+          showRenameModal(session.id, session.name);
         });
       });
     }
@@ -243,6 +365,11 @@
       event.preventDefault();
       const userInput = document.getElementById("user-input").value;
       if (!userInput.trim()) return;
+      
+      // Activate pending session if exists (from New Chat button)
+      if (pendingSession) {
+        activatePendingSession();
+      }
       
       addMessage(userInput, "user");
       fetchGroqResponse(userInput);
@@ -304,21 +431,20 @@
           currentSession.lastMessage = message.substring(0, 30) + '...';
           currentSession.timestamp = Date.now();
           
+          // Auto-name session based on first user message if not already named
+          if (currentSession.messages.length === 1 && currentSession.name.startsWith('Chat ')) {
+            const firstMessage = currentSession.messages[0].text;
+            const autoName = generateSessionNameFromMessage(firstMessage);
+            currentSession.name = autoName;
+          }
+          
           // Limit messages per session
           if (currentSession.messages.length > MAX_HISTORY) {
             currentSession.messages = currentSession.messages.slice(currentSession.messages.length - MAX_HISTORY);
           }
           
           localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
-          
-          // Auto-name session based on first user message if not already named
-          if (currentSession.messages.length === 1 && currentSession.name.startsWith('Chat ')) {
-            const firstMessage = currentSession.messages[0].text;
-            const autoName = firstMessage.substring(0, 20) + (firstMessage.length > 20 ? '...' : '');
-            currentSession.name = autoName;
-            localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
-            renderChatSessions();
-          }
+          renderChatSessions();
         }
       }
       
@@ -493,39 +619,140 @@
       return localStorage.getItem('displayName') || 'Nephalem';
     }
 
-    // ---- Confirm Modal Logic ----
-    const clearBtn = document.getElementById('clear-btn');
-    const modal = document.getElementById('confirmClearModal');
-    const yesBtn = document.getElementById('confirmClearYes');
-    const noBtn = document.getElementById('confirmClearNo');
+    // ---- Modal Functions ----
+    function showClearConfirm() {
+      document.getElementById('confirmClearModal').classList.add('active');
+    }
 
-    clearBtn.addEventListener('click', () => {
+    function showDeleteConfirm(sessionId) {
+      const modal = document.getElementById('confirmDeleteModal');
       modal.classList.add('active');
+      modal.dataset.sessionId = sessionId;
+    }
+
+    function showRenameModal(sessionId, currentName) {
+      const modal = document.getElementById('renameModal');
+      const input = document.getElementById('renameInput');
+      input.value = currentName;
+      modal.classList.add('active');
+      modal.dataset.sessionId = sessionId;
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function showNewChatConfirm() {
+      document.getElementById('newChatModal').classList.add('active');
+    }
+
+    function hideAllModals() {
+      document.querySelectorAll('.confirm-modal').forEach(modal => {
+        modal.classList.remove('active');
+      });
+    }
+
+    // ---- Modal Event Listeners ----
+    // Clear chat modal
+    document.getElementById('clear-btn').addEventListener('click', showClearConfirm);
+    
+    document.getElementById('confirmClearNo').addEventListener('click', () => {
+      document.getElementById('confirmClearModal').classList.remove('active');
     });
-    noBtn.addEventListener('click', () => {
-      modal.classList.remove('active');
-    });
-    yesBtn.addEventListener('click', () => {
+    
+    document.getElementById('confirmClearYes').addEventListener('click', () => {
       const currentSession = getCurrentSession();
       if (currentSession) {
         currentSession.messages = [];
         localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
         renderChatHistory();
       }
+      document.getElementById('confirmClearModal').classList.remove('active');
+    });
+
+    // Delete session modal
+    document.getElementById('confirmDeleteNo').addEventListener('click', () => {
+      document.getElementById('confirmDeleteModal').classList.remove('active');
+    });
+    
+    document.getElementById('confirmDeleteYes').addEventListener('click', () => {
+      const modal = document.getElementById('confirmDeleteModal');
+      const sessionId = modal.dataset.sessionId;
+      deleteSession(sessionId);
       modal.classList.remove('active');
     });
-    // ---- End Confirm Modal Logic ----
 
-    // ---- Sidebar Controls ----
-    document.getElementById('new-chat-btn').addEventListener('click', () => {
-      createNewSession();
+    // Rename session modal
+    document.getElementById('renameCancel').addEventListener('click', () => {
+      document.getElementById('renameModal').classList.remove('active');
+    });
+    
+    document.getElementById('renameConfirm').addEventListener('click', () => {
+      const modal = document.getElementById('renameModal');
+      const sessionId = modal.dataset.sessionId;
+      const newName = document.getElementById('renameInput').value;
+      updateSessionName(sessionId, newName);
+      modal.classList.remove('active');
+    });
+    
+    // Handle Enter key in rename input
+    document.getElementById('renameInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('renameConfirm').click();
+      } else if (e.key === 'Escape') {
+        document.getElementById('renameCancel').click();
+      }
     });
 
-    document.getElementById('toggle-sidebar').addEventListener('click', () => {
+    // New chat modal
+    document.getElementById('new-chat-btn').addEventListener('click', showNewChatConfirm);
+    
+    document.getElementById('newChatCancel').addEventListener('click', () => {
+      document.getElementById('newChatModal').classList.remove('active');
+    });
+    
+    document.getElementById('newChatConfirm').addEventListener('click', () => {
+      createNewSession(); // Creates pending session
+      document.getElementById('newChatModal').classList.remove('active');
+      
+      // Clear current chat display
+      document.getElementById('messages').innerHTML = '';
+      pendingSession = pendingSession || createNewSession();
+      
+      // Update UI
+      renderChatSessions();
+    });
+
+    // Click outside modals to close
+    document.querySelectorAll('.confirm-modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // ---- Sidebar Controls ----
+    function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('collapsed');
       localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-    });
+    }
+
+    function showMobileSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.add('mobile-open');
+      document.getElementById('sidebar-overlay').style.display = 'block';
+    }
+
+    function hideMobileSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.remove('mobile-open');
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
+
+    document.getElementById('toggle-sidebar').addEventListener('click', toggleSidebar);
+    
+    document.getElementById('mobile-toggle-sidebar').addEventListener('click', showMobileSidebar);
+    
+    document.getElementById('sidebar-overlay').addEventListener('click', hideMobileSidebar);
 
     // Check if sidebar was previously collapsed
     if (localStorage.getItem('sidebarCollapsed') === 'true') {
@@ -552,6 +779,24 @@
       overflow: hidden;
     }
 
+    /* Mobile-only and desktop-only helpers */
+    .mobile-only {
+      display: none;
+    }
+
+    .desktop-only {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-only {
+        display: flex;
+      }
+      .desktop-only {
+        display: none;
+      }
+    }
+
     /* Sidebar Styles */
     #sidebar {
       width: 280px;
@@ -560,29 +805,70 @@
       border-right: 1.5px solid #b7cef2;
       display: flex;
       flex-direction: column;
-      transition: width 0.3s, min-width 0.3s;
+      transition: all 0.3s ease;
       overflow: hidden;
       box-shadow: 2px 0 10px rgba(120, 160, 220, 0.1);
+      z-index: 100;
+      position: relative;
     }
 
     #sidebar.collapsed {
-      width: 50px;
-      min-width: 50px;
+      width: 60px;
+      min-width: 60px;
     }
 
     #sidebar.collapsed .sidebar-header h3,
     #sidebar.collapsed .chat-session .session-content,
-    #sidebar.collapsed .chat-session .session-delete-btn {
+    #sidebar.collapsed .chat-session .session-delete-btn,
+    #sidebar.collapsed .no-sessions {
       display: none;
     }
 
     #sidebar.collapsed .sidebar-header {
       justify-content: center;
+      padding: 15px 0;
     }
 
     #sidebar.collapsed .chat-session {
       justify-content: center;
       padding: 10px;
+      min-height: 40px;
+    }
+
+    #sidebar.collapsed .sidebar-btn {
+      margin: 0;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 99;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        position: fixed;
+        left: -280px;
+        height: 100vh;
+        transition: left 0.3s ease;
+      }
+
+      #sidebar.mobile-open {
+        left: 0;
+      }
+
+      #sidebar.collapsed {
+        left: -60px;
+      }
+
+      #sidebar.collapsed.mobile-open {
+        left: 0;
+      }
     }
 
     .sidebar-header {
@@ -592,6 +878,8 @@
       justify-content: space-between;
       border-bottom: 1.5px solid #b7cef2;
       background: linear-gradient(to bottom, #e1f1ff 70%, #d0e6fa 100%);
+      min-height: 60px;
+      box-sizing: border-box;
     }
 
     .sidebar-header h3 {
@@ -599,6 +887,7 @@
       font-size: 16px;
       color: #194e88;
       font-weight: 600;
+      transition: opacity 0.3s;
     }
 
     .sidebar-btn {
@@ -616,6 +905,7 @@
       transition: all 0.2s;
       min-width: 32px;
       min-height: 32px;
+      margin-left: 5px;
     }
 
     .sidebar-btn:hover {
@@ -646,6 +936,14 @@
       border-radius: 3px;
     }
 
+    .no-sessions {
+      text-align: center;
+      color: #8a94a6;
+      font-style: italic;
+      padding: 20px;
+      font-size: 14px;
+    }
+
     .chat-session {
       background: linear-gradient(120deg, #f3faff 85%, #e2f2ff 100%);
       border: 1.5px solid #c5e2fa;
@@ -658,6 +956,8 @@
       justify-content: space-between;
       align-items: center;
       backdrop-filter: blur(2.5px);
+      min-height: 70px;
+      box-sizing: border-box;
     }
 
     .chat-session:hover {
@@ -714,6 +1014,8 @@
       align-items: center;
       justify-content: center;
       opacity: 0;
+      min-width: 24px;
+      min-height: 24px;
     }
 
     .chat-session:hover .session-delete-btn {
@@ -990,43 +1292,17 @@
       height: 1em;
     }
 
-    /* Aero Form Button Container (Mobile/Small) */
-    .form-btn-container {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .form-btn-container button {
-      padding: 6px;
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(to bottom, #e7f5ff 80%, #c8e0fa 100%);
-      border: 1.5px solid #b3d1f7;
-      border-radius: 50%;
-      color: #202124;
-      cursor: pointer;
-      box-shadow: 0px 2px 6px rgba(120, 160, 220, 0.13);
-      transition: background 0.2s, transform 0.15s;
-    }
-    
-    .form-btn-container button:hover {
-      background: linear-gradient(to bottom, #d0eaff 80%, #a1c7f7 100%);
-      transform: translateY(-2px);
-    }
-    
-    .form-btn-container button:active {
-      background: linear-gradient(to bottom, #b6d7ff 80%, #82b3ef 100%);
-      transform: translateY(0);
-    }
-
-    /* Windows 7 Aero Confirm Modal Styles */
+    /* Modal Styles */
     .confirm-modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0; top: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0, 30, 60, 0.18);
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 30, 60, 0.4);
+      backdrop-filter: blur(3px);
       justify-content: center;
       align-items: center;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -1040,91 +1316,129 @@
       background: linear-gradient(180deg, #f9fbfe 80%, #e6e9ec 100%);
       border: 1.5px solid #c2c5ca;
       border-radius: 14px;
-      box-shadow: 0 0 0 1.5px #fff inset, 0 0.5px 0 #e4eefa inset, 0 8px 32px 4px rgba(120,180,240,0.11);
+      box-shadow: 
+        0 0 0 1.5px #fff inset,
+        0 0.5px 0 #e4eefa inset,
+        0 8px 32px 4px rgba(120,180,240,0.2),
+        0 2px 20px rgba(0, 0, 0, 0.1);
       outline: 2.5px solid #e2eef9;
       outline-offset: -7px;
-      min-width: 340px;
-      max-width: 94vw;
-      padding: 28px 40px 20px 40px;
-      text-align: left;
+      min-width: 300px;
+      max-width: 90vw;
+      padding: 28px;
+      text-align: center;
       color: #254a7c;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5em;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .confirm-modal-content p {
-      margin-bottom: 1em;
-      font-size: 1em;
+      margin: 0 0 20px 0;
+      font-size: 16px;
       color: #1b2f4f;
-      text-shadow: 0 1px 0 #fff, 0 2px 2px #c8e4fe;
-      font-weight: 400;
-      letter-spacing: 0.01em;
+      font-weight: 500;
+      line-height: 1.4;
     }
 
-    .confirm-modal-content .modal-actions {
+    .modal-subtitle {
+      font-size: 14px !important;
+      color: #5f6368 !important;
+      font-weight: 400 !important;
+      margin-top: 8px !important;
+    }
+
+    #renameInput {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #b2cbe7;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.95);
+      color: #20415e;
+      font-size: 14px;
+      outline: none;
+      margin: 15px 0 20px 0;
+      box-shadow: 0 1.5px 8px 0 rgba(120, 160, 220, 0.06) inset;
+      box-sizing: border-box;
+    }
+
+    #renameInput:focus {
+      border-color: #67a7ff;
+      box-shadow: 0 0 0 3px #c9e2ff;
+    }
+
+    .modal-buttons {
       display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 8px;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
     }
 
-    /* Windows 7-style Buttons */
     .confirm-modal-content button {
-      min-width: 88px;
-      margin: 0 0.15em;
-      padding: 0.55em 1.4em;
-      border-radius: 6px;
-      border: 1.5px solid #b5c6db;
-      background: linear-gradient(180deg, #eaf4fd 55%, #d8e5f4 100%);
-      color: #174181;
-      font-size: 1em;
+      min-width: 100px;
+      padding: 10px 24px;
+      border-radius: 10px;
+      border: 1.5px solid;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 1px 0 #fff inset, 0 2px 8px 0 rgba(143,174,217,0.08);
-      text-shadow: 0 1px 0 #fff, 0 -1px 0 #e4eaf1;
-      transition: background 0.16s, color 0.16s, border 0.13s;
-      outline: none;
-      display: inline-block;
+      transition: all 0.2s;
     }
 
     .confirm-modal-content button:focus {
       outline: 2px solid #3e90e8;
-      outline-offset: 0.5px;
+      outline-offset: 2px;
     }
 
-    .confirm-modal-content button#confirmClearYes,
-    .confirm-modal-content button.ok {
+    #confirmClearYes,
+    #confirmDeleteYes,
+    #renameConfirm,
+    #newChatConfirm {
       background: linear-gradient(180deg, #e8f6ff 60%, #c1e1fa 100%);
       color: #165b90;
       border-color: #72c6ff;
-      box-shadow: 0 1px 0 #fff inset, 0 2px 8px 0 rgba(143,174,217,0.09);
     }
 
-    .confirm-modal-content button#confirmClearYes:hover,
-    .confirm-modal-content button.ok:hover {
+    #confirmClearYes:hover,
+    #confirmDeleteYes:hover,
+    #renameConfirm:hover,
+    #newChatConfirm:hover {
       background: linear-gradient(180deg,#c7eafd 60%,#b3d9f5 100%);
       border-color: #43a2e6;
       color: #003d70;
+      transform: translateY(-1px);
     }
 
-    .confirm-modal-content button#confirmClearNo,
-    .confirm-modal-content button.cancel {
+    #confirmClearNo,
+    #confirmDeleteNo,
+    #renameCancel,
+    #newChatCancel {
       background: linear-gradient(180deg,#f8fafc 60%,#e3eaf4 100%);
       color: #174181;
       border-color: #b5c6db;
     }
 
-    .confirm-modal-content button#confirmClearNo:hover,
-    .confirm-modal-content button.cancel:hover {
+    #confirmClearNo:hover,
+    #confirmDeleteNo:hover,
+    #renameCancel:hover,
+    #newChatCancel:hover {
       background: linear-gradient(180deg,#e7eaf0 60%,#d2d6db 100%);
       color: #235a9d;
       border-color: #357ae8;
+      transform: translateY(-1px);
     }
 
     .confirm-modal-content button:active {
-      background: #e4eaf1;
-      color: #174181;
+      transform: translateY(1px);
     }
 
     /* PERFORMANCE MODE: Low-Memory Devices */
@@ -1136,7 +1450,8 @@
     body.low-memory .message,
     body.low-memory .assistant-message,
     body.low-memory .user-message,
-    body.low-memory .chat-session {
+    body.low-memory .chat-session,
+    body.low-memory .confirm-modal {
       backdrop-filter: none !important;
       box-shadow: none !important;
       filter: none !important;
@@ -1144,24 +1459,26 @@
 
     /* Responsive Design */
     @media (max-width: 768px) {
-      #sidebar {
-        position: fixed;
-        z-index: 100;
-        height: 100vh;
-        transform: translateX(-100%);
-        transition: transform 0.3s;
-      }
-      
-      #sidebar.open {
-        transform: translateX(0);
-      }
-      
       #chat-container {
         width: 100%;
       }
       
       .sidebar-header {
-        padding: 12px;
+        padding: 12px 15px;
+      }
+      
+      .confirm-modal-content {
+        padding: 24px;
+        margin: 20px;
+      }
+      
+      .modal-buttons {
+        flex-direction: column;
+        gap: 8px;
+      }
+      
+      .confirm-modal-content button {
+        width: 100%;
       }
     }
   </style>

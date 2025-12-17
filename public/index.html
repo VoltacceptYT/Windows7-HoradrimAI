@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>HoradrimAI</title>
+  <meta name="author" content="VoltacceptYT">
+  <meta name="keywords" content="HoradrimAI, AI Assistant, DeepSeek, Chatbot, AI, Assistant, ChatGPT, Diablo II">
+  <meta name="description" content="HoradrimAI - Your Diablo II: Lord of Destruction AI Assistant powered by DeepSeek.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./assets/icon.png">
+  <link id="theme-link" rel="stylesheet" href="./assets/light-theme.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked@16.0.0/lib/marked.umd.min.js"></script>
+</head>
+
+<body>
+  <div id="chat-container">
+    <div id="chat-box">
+      <div id="messages"></div>
+    </div>
+    <form id="chat-form">
+      <textarea type="text" id="user-input" placeholder="Type your message here..." required=""
+        style="white-space: pre-wrap;"></textarea>
+      <button type="submit">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path
+            d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z">
+          </path>
+        </svg>
+      </button>
+      <button type="button" id="clear-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+          <path
+            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0">
+          </path>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmClearModal" class="confirm-modal">
+    <div class="confirm-modal-content">
+      <p>Are you sure you want to clear the chat history?</p>
+      <button id="confirmClearYes">Yes</button>
+      <button id="confirmClearNo">No</button>
+    </div>
+  </div>
+
+  <script>
+    // Performance Mode Detection
+    let lowMemoryMode = false;
+    if (navigator.deviceMemory && navigator.deviceMemory <= 4) {
+      lowMemoryMode = true;
+      document.body.classList.add('low-memory');
+    }
+
+    // Chat history management with memory usage in mind
+    const MAX_HISTORY = lowMemoryMode ? 25 : 50;
+    let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+
+    function getOperatorProfilePicture() {
+      return localStorage.getItem('profilePicture') || './assets/user-profile.png';
+    }
+
+    function checkLoginStatus() {
+      const displayName = localStorage.getItem('displayName');
+      if (displayName) {
+        const googleOnloadElement = document.getElementById('g_id_onload');
+        if (googleOnloadElement) {
+          googleOnloadElement.remove();
+        }
+      }
+    }
+    document.addEventListener('DOMContentLoaded', checkLoginStatus);
+
+    // Load chat history (limit for performance)
+    function renderChatHistory() {
+      const messages = document.getElementById('messages');
+      messages.innerHTML = '';
+      let startIdx = Math.max(0, chatHistory.length - MAX_HISTORY);
+      chatHistory.slice(startIdx).forEach((message) => {
+        addMessage(message.text, message.role, false);
+      });
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    document.getElementById("chat-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      const userInput = document.getElementById("user-input").value;
+      if (!userInput.trim()) return;
+
+      addMessage(userInput, "user");
+      fetchDeepSeekResponse(userInput);
+      document.getElementById("user-input").value = "";
+    });
+
+    document.getElementById("user-input").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        if (event.shiftKey) {
+          const cursorPosition = this.selectionStart;
+          const value = this.value;
+          this.value = value.slice(0, cursorPosition) + "\n" + value.slice(cursorPosition);
+          this.selectionEnd = cursorPosition + 1;
+          event.preventDefault();
+        } else {
+          event.preventDefault();
+          if (this.value.trim()) {
+            document.getElementById("chat-form").dispatchEvent(new Event("submit"));
+          }
+        }
+      }
+    });
+
+    function addMessage(message, sender, save = true) {
+      const messages = document.getElementById("messages");
+      const profile = document.createElement('div');
+      profile.classList.add('profile', `${sender}-profile`);
+      const messageElement = document.createElement("div");
+      messageElement.classList.add("message", `${sender}-message`);
+
+      if (sender === "assistant") {
+        const formattedMessage = marked.parse(message);
+        messageElement.innerHTML = formattedMessage;
+      } else {
+        const userText = message.replace(/\n/g, '<br>');
+        messageElement.innerHTML = marked.parse(userText);
+      }
+
+      if (sender === "user") {
+        profile.innerHTML = `<img src="${getOperatorProfilePicture()}" alt="User Profile Picture" class="profile-picture"><p class="name">${getOperatorName()}</p>`;
+        messages.appendChild(profile);
+        messages.appendChild(messageElement);
+      } else if (sender === "assistant") {
+        profile.innerHTML = `<img src="./assets/icon.png" alt="AI Profile Picture" class="profile-picture"><p class="name">HoradrimAI</p>`;
+        messages.appendChild(profile);
+        messages.appendChild(messageElement);
+      }
+
+      // Store chatHistory in memory and localStorage, enforcing a max
+      if (save) {
+        chatHistory.push({ role: sender === "user" ? "user" : "assistant", text: message });
+        if (chatHistory.length > MAX_HISTORY) {
+          chatHistory = chatHistory.slice(chatHistory.length - MAX_HISTORY);
+        }
+        localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+      }
+
+      // Scroll to bottom
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function fetchDeepSeekResponse(message) {
+      console.log(`Sending message to DeepSeek API: ${message}`);
+
+      // Use relative path since everything is on the same domain
+      const apiUrl = '/api/deepseek';
+
+      // Show loading indicator
+      const loadingId = 'loading-' + Date.now();
+      const loadingMessage = `<div id="${loadingId}" class="loading-indicator">HoradrimAI is thinking...</div>`;
+      addMessage(loadingMessage, "assistant", false);
+
+      // Reduce max tokens for low memory mode
+      const maxTokens = lowMemoryMode ? 1024 : 2048;
+
+      // Build messages array following DeepSeek format
+      const messages = [
+        {
+          role: "system",
+          content: `You are HoradrimAI, a Diablo II: Lord of Destruction AI assistant integrated with the Diablo II Wiki (https://wiki.diablo.run/); deliver precise, consistent information about characters, skills, items, quests, and gameplay systems—format code and builds cleanly, include relevant context, exclude filler, and address the player as ${getOperatorName()}.`
+        }
+      ];
+
+      // Add chat history (last 10 messages for context)
+      const historyContext = chatHistory.slice(-10);
+      historyContext.forEach(msg => {
+        messages.push({
+          role: msg.role,
+          content: msg.text
+        });
+      });
+
+      // Add the current user message
+      messages.push({
+        role: "user",
+        content: message
+      });
+
+      const requestData = {
+        model: "deepseek-chat",
+        messages: messages,
+        max_tokens: maxTokens,
+        temperature: 0.7,
+        stream: false
+      };
+
+      try {
+        console.log('Sending request to:', apiUrl);
+        console.log('Request data:', JSON.stringify(requestData, null, 2));
+
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        // Remove loading indicator
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) {
+          loadingElement.remove();
+        }
+
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          let errorText;
+          try {
+            errorText = await response.text();
+            console.error('API Request Failed:', response.status, errorText);
+          } catch (e) {
+            errorText = 'Failed to read error response';
+          }
+
+          // Try to parse JSON error if possible
+          let errorMessage = `HTTP error ${response.status}`;
+          try {
+            const errorJson = JSON.parse(errorText);
+            errorMessage = errorJson.error || errorJson.message || errorText;
+          } catch {
+            errorMessage = errorText || `HTTP error ${response.status}`;
+          }
+
+          addMessage(`⚠️ Error: ${errorMessage}`, "assistant");
+          return;
+        }
+
+        const result = await response.json();
+        console.log("API Response received:", result);
+
+        if (result.choices && result.choices[0] && result.choices[0].message) {
+          const botMessage = result.choices[0].message.content.trim();
+          addMessage(botMessage, "assistant");
+        } else if (result.error) {
+          addMessage(`⚠️ API Error: ${result.error.message || result.error}`, "assistant");
+        } else {
+          addMessage("I'm sorry, I received an unexpected response. Please try again.", "assistant");
+        }
+      } catch (error) {
+        console.error("Fetch Error:", error);
+
+        // Remove loading indicator
+        const loadingElement = document.getElementById(loadingId);
+        if (loadingElement) {
+          loadingElement.remove();
+        }
+
+        addMessage(`⚠️ Network Error: ${error.message}. Please check your connection.`, "assistant");
+      }
+    }
+
+    function getOperatorName() {
+      return localStorage.getItem('displayName') || 'Guest';
+    }
+
+    // ---- Confirm Modal Logic ----
+    const clearBtn = document.getElementById('clear-btn');
+    const modal = document.getElementById('confirmClearModal');
+    const yesBtn = document.getElementById('confirmClearYes');
+    const noBtn = document.getElementById('confirmClearNo');
+
+    clearBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+    });
+    noBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+    yesBtn.addEventListener('click', () => {
+      localStorage.removeItem('chatHistory');
+      chatHistory = [];
+      modal.classList.remove('active');
+      renderChatHistory();
+    });
+    // ---- End Confirm Modal Logic ----
+
+    // Initial render
+    renderChatHistory();
+  </script>
+
+  <style>
+    .loading-indicator {
+      color: #666;
+      font-style: italic;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+  </style>
+</body>
+
+</html>

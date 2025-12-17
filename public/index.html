@@ -342,7 +342,7 @@
       
       let startIdx = Math.max(0, currentSession.messages.length - MAX_HISTORY);
       currentSession.messages.slice(startIdx).forEach((message) => {
-        addMessage(message.text, message.role, false);
+        addMessageToUI(message.text, message.role);
       });
       messages.scrollTop = messages.scrollHeight;
     }
@@ -357,7 +357,8 @@
         activatePendingSession();
       }
       
-      addMessage(userInput, "user");
+      addMessageToUI(userInput, "user");
+      saveMessageToSession(userInput, "user");
       fetchGroqResponse(userInput);
       document.getElementById("user-input").value = "";
     });
@@ -379,7 +380,7 @@
       }
     });
 
-    function addMessage(message, sender, save = true) {
+    function addMessageToUI(message, sender) {
       const messages = document.getElementById("messages");
       const profile = document.createElement('div');
       profile.classList.add('profile', `${sender}-profile`);
@@ -403,39 +404,38 @@
         messages.appendChild(profile);
         messages.appendChild(messageElement);
       }
-
-      // Store in current session
-      if (save) {
-        const currentSession = getCurrentSession();
-        if (currentSession) {
-          currentSession.messages.push({ 
-            role: sender === "user" ? "user" : "assistant", 
-            text: message 
-          });
-          
-          // Update session last message and timestamp
-          currentSession.lastMessage = message.substring(0, 30) + '...';
-          currentSession.timestamp = Date.now();
-          
-          // Auto-name session based on first user message if not already named
-          if (currentSession.messages.length === 1 && currentSession.name.startsWith('Chat ')) {
-            const firstMessage = currentSession.messages[0].text;
-            const autoName = generateSessionNameFromMessage(firstMessage);
-            currentSession.name = autoName;
-          }
-          
-          // Limit messages per session
-          if (currentSession.messages.length > MAX_HISTORY) {
-            currentSession.messages = currentSession.messages.slice(currentSession.messages.length - MAX_HISTORY);
-          }
-          
-          localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
-          renderChatSessions();
-        }
-      }
       
       // Scroll to bottom
       messages.scrollTop = messages.scrollHeight;
+    }
+
+    function saveMessageToSession(message, sender) {
+      const currentSession = getCurrentSession();
+      if (!currentSession) return;
+      
+      currentSession.messages.push({ 
+        role: sender === "user" ? "user" : "assistant", 
+        text: message 
+      });
+      
+      // Update session last message and timestamp
+      currentSession.lastMessage = message.substring(0, 30) + '...';
+      currentSession.timestamp = Date.now();
+      
+      // Auto-name session based on first user message if not already named
+      if (currentSession.messages.length === 1 && currentSession.name.startsWith('Chat ')) {
+        const firstMessage = currentSession.messages[0].text;
+        const autoName = generateSessionNameFromMessage(firstMessage);
+        currentSession.name = autoName;
+      }
+      
+      // Limit messages per session
+      if (currentSession.messages.length > MAX_HISTORY) {
+        currentSession.messages = currentSession.messages.slice(currentSession.messages.length - MAX_HISTORY);
+      }
+      
+      localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
+      renderChatSessions();
     }
 
     async function fetchGroqResponse(message) {
@@ -552,7 +552,7 @@
           document.getElementById(messageId).innerHTML = formattedMessage;
           
           // Save error message to session
-          addMessage(botMessage, "assistant");
+          saveMessageToSession(botMessage, "assistant");
           
           return;
         }
@@ -565,20 +565,20 @@
           const formattedMessage = marked.parse(botMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
           
-          // Save to session
-          addMessage(botMessage, "assistant");
+          // Save to session - ONLY ONCE
+          saveMessageToSession(botMessage, "assistant");
         } else if (result.error) {
           const errorMessage = `⚠️ API Error: ${result.error.message || result.error}`;
           const formattedMessage = marked.parse(errorMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
           
-          addMessage(errorMessage, "assistant");
+          saveMessageToSession(errorMessage, "assistant");
         } else {
           const errorMessage = "I'm sorry, I received an unexpected response. Please try again.";
           const formattedMessage = marked.parse(errorMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
           
-          addMessage(errorMessage, "assistant");
+          saveMessageToSession(errorMessage, "assistant");
         }
       } catch (error) {
         console.error("Fetch Error:", error);
@@ -590,8 +590,10 @@
           document.getElementById(messageId).innerHTML = formattedMessage;
         } else {
           // If message element was removed, add a new one
-          addMessage(errorMessage, "assistant");
+          addMessageToUI(errorMessage, "assistant");
         }
+        
+        saveMessageToSession(errorMessage, "assistant");
       }
       
       // Update chat sessions list

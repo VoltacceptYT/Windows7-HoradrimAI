@@ -14,20 +14,10 @@
   <!-- Sidebar for Chat History -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <button id="mobile-toggle-sidebar" class="sidebar-btn mobile-only" title="Toggle Sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/>
-        </svg>
-      </button>
       <h3>Chat History</h3>
       <button id="new-chat-btn" class="sidebar-btn" title="New Chat">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
           <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-        </svg>
-      </button>
-      <button id="toggle-sidebar" class="sidebar-btn desktop-only" title="Toggle Sidebar">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
         </svg>
       </button>
     </div>
@@ -35,9 +25,6 @@
       <!-- Chat sessions will be dynamically added here -->
     </div>
   </div>
-
-  <!-- Mobile Sidebar Overlay -->
-  <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
   <!-- Main Chat Container -->
   <div id="chat-container">
@@ -212,7 +199,6 @@
       localStorage.setItem('currentSessionId', sessionId);
       renderChatHistory();
       renderChatSessions();
-      hideMobileSidebar();
     }
 
     function updateSessionName(sessionId, newName) {
@@ -729,36 +715,6 @@
       });
     });
 
-    // ---- Sidebar Controls ----
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-      localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-    }
-
-    function showMobileSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.add('mobile-open');
-      document.getElementById('sidebar-overlay').style.display = 'block';
-    }
-
-    function hideMobileSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.remove('mobile-open');
-      document.getElementById('sidebar-overlay').style.display = 'none';
-    }
-
-    document.getElementById('toggle-sidebar').addEventListener('click', toggleSidebar);
-    
-    document.getElementById('mobile-toggle-sidebar').addEventListener('click', showMobileSidebar);
-    
-    document.getElementById('sidebar-overlay').addEventListener('click', hideMobileSidebar);
-
-    // Check if sidebar was previously collapsed
-    if (localStorage.getItem('sidebarCollapsed') === 'true') {
-      document.getElementById('sidebar').classList.add('collapsed');
-    }
-
     // Initial renders
     renderChatSessions();
     renderChatHistory();
@@ -779,24 +735,6 @@
       overflow: hidden;
     }
 
-    /* Mobile-only and desktop-only helpers */
-    .mobile-only {
-      display: none;
-    }
-
-    .desktop-only {
-      display: flex;
-    }
-
-    @media (max-width: 768px) {
-      .mobile-only {
-        display: flex;
-      }
-      .desktop-only {
-        display: none;
-      }
-    }
-
     /* Sidebar Styles */
     #sidebar {
       width: 280px;
@@ -805,70 +743,8 @@
       border-right: 1.5px solid #b7cef2;
       display: flex;
       flex-direction: column;
-      transition: all 0.3s ease;
       overflow: hidden;
       box-shadow: 2px 0 10px rgba(120, 160, 220, 0.1);
-      z-index: 100;
-      position: relative;
-    }
-
-    #sidebar.collapsed {
-      width: 60px;
-      min-width: 60px;
-    }
-
-    #sidebar.collapsed .sidebar-header h3,
-    #sidebar.collapsed .chat-session .session-content,
-    #sidebar.collapsed .chat-session .session-delete-btn,
-    #sidebar.collapsed .no-sessions {
-      display: none;
-    }
-
-    #sidebar.collapsed .sidebar-header {
-      justify-content: center;
-      padding: 15px 0;
-    }
-
-    #sidebar.collapsed .chat-session {
-      justify-content: center;
-      padding: 10px;
-      min-height: 40px;
-    }
-
-    #sidebar.collapsed .sidebar-btn {
-      margin: 0;
-    }
-
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 99;
-    }
-
-    @media (max-width: 768px) {
-      #sidebar {
-        position: fixed;
-        left: -280px;
-        height: 100vh;
-        transition: left 0.3s ease;
-      }
-
-      #sidebar.mobile-open {
-        left: 0;
-      }
-
-      #sidebar.collapsed {
-        left: -60px;
-      }
-
-      #sidebar.collapsed.mobile-open {
-        left: 0;
-      }
     }
 
     .sidebar-header {
@@ -887,7 +763,6 @@
       font-size: 16px;
       color: #194e88;
       font-weight: 600;
-      transition: opacity 0.3s;
     }
 
     .sidebar-btn {
@@ -1455,31 +1330,6 @@
       backdrop-filter: none !important;
       box-shadow: none !important;
       filter: none !important;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      #chat-container {
-        width: 100%;
-      }
-      
-      .sidebar-header {
-        padding: 12px 15px;
-      }
-      
-      .confirm-modal-content {
-        padding: 24px;
-        margin: 20px;
-      }
-      
-      .modal-buttons {
-        flex-direction: column;
-        gap: 8px;
-      }
-      
-      .confirm-modal-content button {
-        width: 100%;
-      }
     }
   </style>
 </body>

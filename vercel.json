@@ -1,12 +1,36 @@
 {
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/chat",
+      "destination": "/api/chat.js"
     },
     {
-      "source": "/(.*)",
-      "destination": "/public/$1"
+      "source": "/api/search",
+      "destination": "/api/search.js"
+    },
+    {
+      "source": "/browse",
+      "destination": "/public/browse/index.html"
+    },
+    {
+      "source": "/browse/(.*)",
+      "destination": "/public/browse/$1"
+    },
+    {
+      "source": "/chat",
+      "destination": "/public/chat/index.html"
+    },
+    {
+      "source": "/chat/(.*)",
+      "destination": "/public/chat/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/public/chat/assets/$1"
+    },
+    {
+      "source": "/",
+      "destination": "/public/chat/index.html"
     }
   ],
   "headers": [
@@ -14,24 +38,16 @@
       "source": "/api/(.*)",
       "headers": [
         {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        },
-        {
           "key": "Access-Control-Allow-Origin",
           "value": "*"
         },
         {
           "key": "Access-Control-Allow-Methods",
-          "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+          "value": "GET, POST, OPTIONS"
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
+          "value": "Content-Type, Authorization"
         }
       ]
     },
@@ -43,12 +59,16 @@
           "value": "nosniff"
         },
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; frame-ancestors 'self' https://voltacceptyt.github.io;"
+          "key": "X-Frame-Options",
+          "value": "DENY"
         },
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
         }
       ]
     }

@@ -13,20 +13,8 @@
       "destination": "/public/browse/index.html"
     },
     {
-      "source": "/browse/(.*)",
-      "destination": "/public/browse/$1"
-    },
-    {
       "source": "/chat",
       "destination": "/public/chat/index.html"
-    },
-    {
-      "source": "/chat/(.*)",
-      "destination": "/public/chat/$1"
-    },
-    {
-      "source": "/assets/(.*)",
-      "destination": "/public/chat/assets/$1"
     },
     {
       "source": "/",
@@ -47,28 +35,7 @@
         },
         {
           "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
+          "value": "Content-Type"
         }
       ]
     }

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   
   try {
     // Get search query from query parameters
-    const { q, format = 'json', kl = 'us-en', count = 20 } = req.query;
+    const { q } = req.query;
     
     if (!q || q.trim() === '') {
       return res.status(400).json({ 
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     console.log(`Searching for: "${q}"`);
     
     // Call DuckDuckGo Instant Answer API
-    const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=${format}&kl=${kl}&no_html=1&skip_disambig=1&t=SearchEngine`;
+    const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1&skip_disambig=1&t=SearchEngine`;
     
     console.log('DuckDuckGo API URL:', ddgUrl);
     
@@ -41,8 +41,7 @@ export default async function handler(req, res) {
       headers: {
         'Accept': 'application/json',
         'User-Agent': 'SearchEngine/1.0'
-      },
-      timeout: 10000
+      }
     });
     
     if (!response.ok) {
@@ -51,7 +50,7 @@ export default async function handler(req, res) {
     
     const data = await response.json();
     
-    // Format response for better frontend consumption
+    // Format response
     const formattedResponse = {
       query: q,
       abstract: {
@@ -60,69 +59,55 @@ export default async function handler(req, res) {
         url: data.AbstractURL || '',
         heading: data.Heading || ''
       },
-      definition: {
-        text: data.Definition || '',
-        source: data.DefinitionSource || '',
-        url: data.DefinitionURL || ''
-      },
       image: data.Image || '',
-      type: data.Type || '',
       results: [],
       relatedTopics: []
     };
     
-    // Process Results (web search results)
+    // Process Results
     if (data.Results && Array.isArray(data.Results)) {
-      formattedResponse.results = data.Results.map(result => ({
-        title: result.Text || '',
+      formattedResponse.results = data.Results.slice(0, 10).map(result => ({
+        title: result.Text ? result.Text.split(' — ')[0] : 'Untitled',
         url: result.FirstURL || '',
-        description: result.Text ? result.Text.split(' — ').slice(1).join(' — ') : '',
-        icon: result.Icon ? (result.Icon.URL || '') : ''
-      })).slice(0, count);
+        description: result.Text ? result.Text.split(' — ').slice(1).join(' — ') : 'No description'
+      }));
     }
     
     // Process Related Topics
     if (data.RelatedTopics && Array.isArray(data.RelatedTopics)) {
       formattedResponse.relatedTopics = data.RelatedTopics
         .filter(topic => topic.Text && topic.FirstURL)
+        .slice(0, 6)
         .map(topic => ({
           title: topic.Text.split(' — ')[0] || topic.Text,
           url: topic.FirstURL,
           description: topic.Text.includes(' — ') ? 
-            topic.Text.split(' — ').slice(1).join(' — ') : '',
-          icon: topic.Icon ? (topic.Icon.URL || '') : ''
-        }))
-        .slice(0, 10);
+            topic.Text.split(' — ').slice(1).join(' — ') : ''
+        }));
     }
     
-    // If no results from API, try to get some from other sources
-    if (formattedResponse.results.length === 0 && formattedResponse.relatedTopics.length === 0) {
+    // If no results at all, provide a fallback
+    if (formattedResponse.results.length === 0 && formattedResponse.relatedTopics.length === 0 && !formattedResponse.abstract.text) {
       formattedResponse.results = [{
-        title: `Search results for "${q}"`,
+        title: `Search for "${q}"`,
         url: `https://duckduckgo.com/?q=${encodeURIComponent(q)}`,
-        description: 'View more results on DuckDuckGo',
-        icon: ''
+        description: 'Click to search directly on DuckDuckGo'
       }];
     }
     
-    console.log(`Search completed. Found ${formattedResponse.results.length} results and ${formattedResponse.relatedTopics.length} related topics.`);
+    console.log(`Search completed. Found ${formattedResponse.results.length} results.`);
     
     return res.status(200).json(formattedResponse);
     
   } catch (error) {
     console.error('Search API error:', error);
     
-    // Return a fallback response
+    // Return a simple error response
     return res.status(500).json({
       error: 'Search service temporarily unavailable',
       message: error.message,
       query: req.query.q || '',
-      results: [{
-        title: 'Search Error',
-        url: `https://duckduckgo.com/?q=${encodeURIComponent(req.query.q || '')}`,
-        description: 'Click to search directly on DuckDuckGo',
-        icon: ''
-      }],
+      results: [],
       relatedTopics: []
     });
   }

@@ -5,14 +5,6 @@
       "destination": "/api/chat.js"
     },
     {
-      "source": "/api/search",
-      "destination": "/api/search.js"
-    },
-    {
-      "source": "/browse",
-      "destination": "/public/browse/index.html"
-    },
-    {
       "source": "/chat",
       "destination": "/public/chat/index.html"
     },

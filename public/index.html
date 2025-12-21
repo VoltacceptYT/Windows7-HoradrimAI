@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoltaOS Desktop Environment</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Desktop Styles */
+        #desktop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* App Window Styles */
+        .app-window {
+            position: fixed;
+            width: 726px;
+            height: 482px;
+            background: rgba(180, 210, 255, 0.6);
+            backdrop-filter: blur(14px) saturate(1.5) brightness(1.1);
+            border: 0px solid rgba(120, 160, 220, 0.7);
+            border-radius: 6px;
+            box-shadow: 0 0 14px rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            resize: both;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .app-header {
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(200, 220, 240, 0.4));
+            padding: 4px 8px 4px 8px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(160, 160, 160, 0.5);
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .app-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-title-icon {
+            width: 16px;
+            height: 16px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: inline-block;
+            flex-shrink: 0;
+            image-rendering: auto;
+            pointer-events: none;
+            user-drag: none;
+            -webkit-user-drag: none;
+        }
+
+        .app-title span {
+            font-weight: bold;
+            color: #1a1a1a;
+            text-shadow: 0 1px 0 #fff;
+        }
+
+        .app-button {
+            width: 26px;
+            height: 26px;
+            border: 1px solid #5a8ac6;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #dbeeff, #a4cfff);
+            box-shadow: inset 0 1px 0 #ffffff;
+            color: #003366;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-button:hover {
+            background: linear-gradient(to bottom, #c0e0ff, #8fc4ff);
+        }
+
+        .app-controls {
+            position: absolute;
+            top: 0;
+            right: 5px;
+            display: flex;
+        }
+
+        .app-close {
+            background: linear-gradient(to bottom, #f66, #c00);
+            color: #900;
+            border: 1px solid #900;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            font-weight: bold;
+            text-shadow: 0 -1px 0 #600;
+            width: 52px;
+            height: 18px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            margin-right: 2.5px;
+        }
+
+        /* Desktop Icon Styles */
+        .desktop-icon {
+            position: absolute;
+            width: 80px;
+            text-align: center;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+            cursor: default;
+            z-index: 2;
+            user-select: none;
+        }
+
+        .desktop-icon-img {
+            width: 48px;
+            height: 48px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-bottom: 4px;
+            display: inline-block;
+            pointer-events: none;
+            user-drag: none;
+            -webkit-user-drag: none;
+        }
+
+        .desktop-icon div {
+            padding: 2px;
+            border-radius: 2px;
+        }
+
+        /* App Browser Styles */
+        .app-browser {
+            flex: 1;
+            width: 100%;
+            border: none;
+            min-height: 0;
+            background: white;
+        }
+
+        /* App Minimized State */
+        .app-window.minimized {
+            display: none;
+        }
+
+        /* Window Z-index Management */
+        .app-window.active {
+            z-index: 1001;
+        }
+
+        /* Grid snapping for icons */
+        .grid-snap {
+            transition: left 0.1s, top 0.1s;
+        }
+    </style>
+</head>
+<body>
+    <div id="desktop"></div>
+
+    <script>
+        class DesktopApp {
+            constructor(config) {
+                this.id = config.id || `app-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                this.title = config.title || "Untitled App";
+                this.iconUrl = config.iconUrl || "";
+                this.url = config.url || "";
+                this.windowPosition = config.windowPosition || { top: 100, left: 100 };
+                this.iconPosition = config.iconPosition || { top: 64, left: 64 };
+                this.windowSize = config.windowSize || { width: 726, height: 482 };
+                
+                this.windowElement = null;
+                this.iconElement = null;
+                this.isOpen = false;
+                this.isMinimized = false;
+                
+                this.createIcon();
+                this.createWindow();
+            }
+
+            createIcon() {
+                this.iconElement = document.createElement('div');
+                this.iconElement.className = 'desktop-icon';
+                this.iconElement.id = `${this.id}-icon`;
+                this.iconElement.style.top = `${this.iconPosition.top}px`;
+                this.iconElement.style.left = `${this.iconPosition.left}px`;
+                
+                this.iconElement.innerHTML = `
+                    <div class="desktop-icon-img" style="background-image: url('${this.iconUrl}')"></div>
+                    <div>${this.title}</div>
+                `;
+                
+                this.iconElement.addEventListener('dblclick', () => this.open());
+                this.makeIconDraggable();
+                
+                document.getElementById('desktop').appendChild(this.iconElement);
+            }
+
+            createWindow() {
+                this.windowElement = document.createElement('div');
+                this.windowElement.className = 'app-window';
+                this.windowElement.id = `${this.id}-window`;
+                this.windowElement.style.top = `${this.windowPosition.top}px`;
+                this.windowElement.style.left = `${this.windowPosition.left}px`;
+                this.windowElement.style.width = `${this.windowSize.width}px`;
+                this.windowElement.style.height = `${this.windowSize.height}px`;
+                
+                this.windowElement.innerHTML = `
+                    <div class="app-header">
+                        <div class="app-titlebar">
+                            <div class="app-title">
+                                <span class="app-title-icon" style="background-image: url('${this.iconUrl}')"></span>
+                                <span>${this.title}</span>
+                            </div>
+                        </div>
+                        <div class="app-controls">
+                            <button class="app-close" id="${this.id}-close">
+                                <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52" xml:space="preserve">
+                                    <path d="m31 25.4 13-13.1c.6-.6.6-1.5 0-2.1l-2-2.1c-.6-.6-1.5-.6-2.1 0L26.8 21.2c-.4.4-1 .4-1.4 0L12.3 8c-.6-.6-1.5-.6-2.1 0l-2.1 2.1c-.6.6-.6 1.5 0 2.1l13.1 13.1c.4.4.4 1 0 1.4L8 39.9c-.6.6-.6 1.5 0 2.1l2.1 2.1c.6.6 1.5.6 2.1 0L25.3 31c.4-.4 1-.4 1.4 0l13.1 13.1c.6.6 1.5.6 2.1 0L44 42c.6-.6.6-1.5 0-2.1L31 26.8c-.4-.4-.4-1 0-1.4"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <iframe class="app-browser" src="${this.url}"></iframe>
+                `;
+                
+                this.makeWindowDraggable();
+                this.makeWindowResizable();
+                
+                document.body.appendChild(this.windowElement);
+                this.windowElement.style.display = 'none';
+                
+                // Add close button event
+                document.getElementById(`${this.id}-close`).addEventListener('click', () => this.close());
+                
+                // Bring window to front when clicked
+                this.windowElement.addEventListener('mousedown', () => this.bringToFront());
+            }
+
+            makeIconDraggable() {
+                const GRID_SIZE = 64;
+                let dragging = false;
+                let offsetX = 0;
+                let offsetY = 0;
+                
+                this.iconElement.addEventListener('mousedown', (e) => {
+                    dragging = true;
+                    offsetX = e.clientX - this.iconElement.offsetLeft;
+                    offsetY = e.clientY - this.iconElement.offsetTop;
+                    e.preventDefault();
+                    this.bringToFront();
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (dragging) {
+                        const x = Math.round((e.clientX - offsetX) / GRID_SIZE) * GRID_SIZE;
+                        const y = Math.round((e.clientY - offsetY) / GRID_SIZE) * GRID_SIZE;
+                        this.iconElement.style.left = `${x}px`;
+                        this.iconElement.style.top = `${y}px`;
+                        this.iconPosition = { top: y, left: x };
+                    }
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    dragging = false;
+                });
+            }
+
+            makeWindowDraggable() {
+                const header = this.windowElement.querySelector('.app-header');
+                let dragging = false;
+                let offsetX = 0;
+                let offsetY = 0;
+                
+                header.addEventListener('mousedown', (e) => {
+                    dragging = true;
+                    offsetX = e.clientX - this.windowElement.offsetLeft;
+                    offsetY = e.clientY - this.windowElement.offsetTop;
+                    e.preventDefault();
+                    this.bringToFront();
+                });
+                
+                document.addEventListener('mousemove', (e) => {
+                    if (dragging) {
+                        this.windowElement.style.left = `${e.clientX - offsetX}px`;
+                        this.windowElement.style.top = `${e.clientY - offsetY}px`;
+                        this.windowPosition = { 
+                            top: e.clientY - offsetY, 
+                            left: e.clientX - offsetX 
+                        };
+                    }
+                });
+                
+                document.addEventListener('mouseup', () => {
+                    dragging = false;
+                });
+            }
+
+            makeWindowResizable() {
+                this.windowElement.addEventListener('mousedown', (e) => {
+                    if (e.target === this.windowElement) {
+                        const startWidth = this.windowElement.offsetWidth;
+                        const startHeight = this.windowElement.offsetHeight;
+                        const startX = e.clientX;
+                        const startY = e.clientY;
+                        
+                        function onMouseMove(e) {
+                            this.windowElement.style.width = `${startWidth + (e.clientX - startX)}px`;
+                            this.windowElement.style.height = `${startHeight + (e.clientY - startY)}px`;
+                            this.windowSize = {
+                                width: startWidth + (e.clientX - startX),
+                                height: startHeight + (e.clientY - startY)
+                            };
+                        }
+                        
+                        function onMouseUp() {
+                            document.removeEventListener('mousemove', onMouseMove.bind(this));
+                            document.removeEventListener('mouseup', onMouseUp);
+                        }
+                        
+                        document.addEventListener('mousemove', onMouseMove.bind(this));
+                        document.addEventListener('mouseup', onMouseUp);
+                        
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            open() {
+                this.windowElement.style.display = 'flex';
+                this.iconElement.style.display = 'none';
+                this.isOpen = true;
+                this.isMinimized = false;
+                this.bringToFront();
+            }
+
+            close() {
+                this.windowElement.style.display = 'none';
+                this.iconElement.style.display = 'block';
+                this.isOpen = false;
+            }
+
+            minimize() {
+                this.windowElement.classList.add('minimized');
+                this.isMinimized = true;
+            }
+
+            restore() {
+                this.windowElement.classList.remove('minimized');
+                this.isMinimized = false;
+            }
+
+            bringToFront() {
+                // Remove active class from all windows
+                document.querySelectorAll('.app-window').forEach(window => {
+                    window.classList.remove('active');
+                });
+                
+                // Add active class to this window
+                this.windowElement.classList.add('active');
+                
+                // Set high z-index
+                const windows = document.querySelectorAll('.app-window');
+                let highestZ = 1000;
+                windows.forEach(window => {
+                    const z = parseInt(window.style.zIndex) || 1000;
+                    if (z > highestZ) highestZ = z;
+                });
+                
+                this.windowElement.style.zIndex = highestZ + 1;
+            }
+
+            destroy() {
+                if (this.windowElement) {
+                    this.windowElement.remove();
+                }
+                if (this.iconElement) {
+                    this.iconElement.remove();
+                }
+            }
+        }
+
+        // App Manager to handle multiple apps
+        class AppManager {
+            constructor() {
+                this.apps = new Map();
+                this.nextIconPosition = { top: 64, left: 64 };
+            }
+
+            registerApp(config) {
+                // Set default position for new icon
+                const iconConfig = {
+                    ...config,
+                    iconPosition: { ...this.nextIconPosition }
+                };
+                
+                const app = new DesktopApp(iconConfig);
+                this.apps.set(app.id, app);
+                
+                // Update next icon position (stagger them)
+                this.nextIconPosition.left += 80;
+                if (this.nextIconPosition.left > 500) {
+                    this.nextIconPosition.left = 64;
+                    this.nextIconPosition.top += 80;
+                }
+                
+                return app;
+            }
+
+            getApp(appId) {
+                return this.apps.get(appId);
+            }
+
+            removeApp(appId) {
+                const app = this.apps.get(appId);
+                if (app) {
+                    app.destroy();
+                    this.apps.delete(appId);
+                }
+            }
+
+            getAllApps() {
+                return Array.from(this.apps.values());
+            }
+
+            closeAllApps() {
+                this.apps.forEach(app => app.close());
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create app manager
+            window.appManager = new AppManager();
+            
+            // REGISTER APPS BELOW
+
+            // APP #1: HoradrimAI
+            const horadrimAI = window.appManager.registerApp({
+                id: 'horadrimai',
+                title: 'HoradrimAI',
+                iconUrl: 'https://horadrimai.vercel.app/chat/assets/icon.png',
+                url: 'https://horadrimai.vercel.app/chat/',
+                windowPosition: { top: 100, left: 100 },
+                windowSize: { width: 726, height: 482 }
+            });
+            
+            // APP #2: VoltaNET
+            const voltaNET = window.appManager.registerApp({
+                id: 'voltanet',
+                title: 'VoltaNET',
+                iconUrl: 'https://horadrimai.vercel.app/browse/assets/icon.png',
+                url: 'https://horadrimai.vercel.app/browse/',
+                windowPosition: { top: 100, left: 100 },
+                windowSize: { width: 726, height: 482 }
+            });
+            
+            // Add click-to-focus functionality for windows
+            document.addEventListener('mousedown', (e) => {
+                // Find if a window was clicked
+                let target = e.target;
+                while (target && !target.classList.contains('app-window')) {
+                    target = target.parentElement;
+                }
+                
+                if (target && target.classList.contains('app-window')) {
+                    const appId = target.id.replace('-window', '');
+                    const app = window.appManager.getApp(appId);
+                    if (app) {
+                        app.bringToFront();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -18,7 +18,7 @@
     },
     {
       "source": "/",
-      "destination": "/public/chat/index.html"
+      "destination": "/public/index.html"
     }
   ],
   "headers": [

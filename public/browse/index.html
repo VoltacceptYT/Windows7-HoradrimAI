@@ -50,7 +50,6 @@
             id="searchInput"
             placeholder="Enter your search query..."
             autocomplete="off"
-            autofocus
           >
           <button type="button" id="clearSearch" class="clear-btn" title="Clear search">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -103,6 +102,9 @@
   </div>
 
   <script>
+    // Check if we're in an iframe
+    const isInIframe = window.self !== window.top;
+    
     // DOM Elements
     const searchForm = document.getElementById('searchForm');
     const searchInput = document.getElementById('searchInput');
@@ -122,10 +124,12 @@
       bindEvents();
       checkURLForQuery();
       
-      // Focus search input
-      setTimeout(() => {
-        searchInput.focus();
-      }, 100);
+      // Only auto-focus if not in iframe
+      if (!isInIframe) {
+        setTimeout(() => {
+          searchInput.focus();
+        }, 100);
+      }
     }
     
     function bindEvents() {
@@ -145,7 +149,7 @@
       clearSearch.addEventListener('click', () => {
         searchInput.value = '';
         clearSearch.style.display = 'none';
-        searchInput.focus();
+        if (!isInIframe) searchInput.focus();
       });
       
       // Search input events
@@ -171,20 +175,22 @@
         });
       });
       
-      // Keyboard shortcuts
-      document.addEventListener('keydown', (e) => {
-        // Focus search on Ctrl+K or Cmd+K
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-          e.preventDefault();
-          searchInput.focus();
-        }
-        
-        // Clear search on Escape
-        if (e.key === 'Escape' && document.activeElement === searchInput) {
-          searchInput.value = '';
-          clearSearch.style.display = 'none';
-        }
-      });
+      // Keyboard shortcuts (only if not in iframe)
+      if (!isInIframe) {
+        document.addEventListener('keydown', (e) => {
+          // Focus search on Ctrl+K or Cmd+K
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+          }
+          
+          // Clear search on Escape
+          if (e.key === 'Escape' && document.activeElement === searchInput) {
+            searchInput.value = '';
+            clearSearch.style.display = 'none';
+          }
+        });
+      }
     }
     
     function checkURLForQuery() {
@@ -209,21 +215,27 @@
       loadingIndicator.style.display = 'flex';
       resultsContainer.style.display = 'none';
       errorDisplay.style.display = 'none';
+      errorDisplay.innerHTML = '';
       
       try {
         const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         
+        // Handle response
         if (!response.ok) {
-          let errorText = 'Unknown error';
+          // Try to get error message
+          let errorMessage = `HTTP Error ${response.status}`;
           try {
-            errorText = await response.text();
-            const errorJson = JSON.parse(errorText);
-            errorText = errorJson.error?.message || errorJson.details?.error || errorText;
-          } catch {
-            // Keep original errorText
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorData.error || errorMessage;
+          } catch (e) {
+            // If not JSON, try text
+            try {
+              errorMessage = await response.text();
+            } catch (e2) {
+              // Keep original error message
+            }
           }
-          
-          throw new Error(`HTTP ${response.status}: ${errorText}`);
+          throw new Error(errorMessage);
         }
         
         const data = await response.json();
@@ -258,7 +270,7 @@
         knowledgePanel.innerHTML = `
           <div class="knowledge-header">
             <h3>${data.abstract.heading || 'Summary'}</h3>
-            ${data.image ? `<img src="${data.image}" alt="${data.abstract.heading || 'Image'}" class="knowledge-image">` : ''}
+            ${data.image ? `<img src="${data.image}" alt="${data.abstract.heading || 'Image'}" class="knowledge-image" onerror="this.style.display='none'">` : ''}
           </div>
           <div class="knowledge-content">
             <p>${data.abstract.text}</p>
@@ -290,7 +302,7 @@
               <span>${domain}</span>
             </div>
             <h4 class="result-title">
-              <a href="${result.url}" target="_blank">${result.title || 'Untitled'}</a>
+              <a href="${result.url}" target="_blank" rel="noopener noreferrer">${result.title || 'Untitled'}</a>
             </h4>
             <p class="result-description">${result.description || 'No description available.'}</p>
           `;

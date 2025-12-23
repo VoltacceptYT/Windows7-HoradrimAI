@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>HoradrimAI</title>
@@ -10,6 +11,7 @@
   <link rel="icon" href="./assets/icon.png">
   <script src="https://cdn.jsdelivr.net/npm/marked@16.0.0/lib/marked.umd.min.js"></script>
 </head>
+
 <body>
   <!-- Sidebar for Chat History -->
   <div id="sidebar">
@@ -17,7 +19,8 @@
       <h3>Chat History</h3>
       <button id="new-chat-btn" class="sidebar-btn" title="New Chat">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+          <path
+            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
         </svg>
       </button>
     </div>
@@ -32,15 +35,20 @@
       <div id="messages"></div>
     </div>
     <form id="chat-form">
-      <textarea type="text" id="user-input" placeholder="Type your message here..." required="" style="white-space: pre-wrap;"></textarea>
+      <textarea type="text" id="user-input" placeholder="Type your message here..." required=""
+        style="white-space: pre-wrap;"></textarea>
       <button type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"></path>
+          <path
+            d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z">
+          </path>
         </svg>
       </button>
       <button type="button" id="clear-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-          <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
+          <path
+            d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0">
+          </path>
         </svg>
       </button>
     </form>
@@ -103,12 +111,12 @@
     // Chat history management with multiple sessions
     const MAX_SESSIONS = 20;
     const MAX_HISTORY = lowMemoryMode ? 25 : 50;
-    
+
     // Get or initialize sessions from localStorage
     let chatSessions = JSON.parse(localStorage.getItem('chatSessions')) || [];
     let currentSessionId = localStorage.getItem('currentSessionId') || null;
     let pendingSession = null; // For new chat button
-    
+
     // Initialize if no sessions exist
     if (chatSessions.length === 0) {
       createNewSession(true); // Create initial session immediately
@@ -130,18 +138,18 @@
         messages: [],
         lastMessage: 'No messages yet'
       };
-      
+
       if (immediate) {
         chatSessions.unshift(newSession);
         currentSessionId = sessionId;
-        
+
         if (chatSessions.length > MAX_SESSIONS) {
           chatSessions = chatSessions.slice(0, MAX_SESSIONS);
         }
-        
+
         localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
         localStorage.setItem('currentSessionId', currentSessionId);
-        
+
         renderChatHistory();
         renderChatSessions();
         return newSession;
@@ -159,14 +167,14 @@
         if (!existingSession) {
           chatSessions.unshift(pendingSession);
           currentSessionId = pendingSession.id;
-          
+
           if (chatSessions.length > MAX_SESSIONS) {
             chatSessions = chatSessions.slice(0, MAX_SESSIONS);
           }
-          
+
           localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
           localStorage.setItem('currentSessionId', currentSessionId);
-          
+
           renderChatSessions();
         }
         pendingSession = null;
@@ -176,10 +184,10 @@
     function deleteSession(sessionId) {
       const sessionToDelete = chatSessions.find(session => session.id === sessionId);
       if (!sessionToDelete) return;
-      
+
       chatSessions = chatSessions.filter(session => session.id !== sessionId);
       localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
-      
+
       // If we deleted the current session, switch to the first one
       if (sessionId === currentSessionId) {
         if (chatSessions.length > 0) {
@@ -190,7 +198,7 @@
           createNewSession(true);
         }
       }
-      
+
       renderChatSessions();
     }
 
@@ -213,7 +221,7 @@
     function generateSessionNameFromMessage(message) {
       // Generate a meaningful session name from the first message
       const messageLower = message.toLowerCase();
-      
+
       // Diablo II specific keywords for better naming
       const keywords = {
         'build': 'Build',
@@ -235,10 +243,10 @@
         'andariel': 'Andariel',
         'duriel': 'Duriel'
       };
-      
+
       // Extract first meaningful sentence or 5 words
       const words = message.split(' ').slice(0, 8);
-      
+
       // Check for keywords to create better name
       let keywordFound = null;
       for (const [key, value] of Object.entries(keywords)) {
@@ -247,11 +255,11 @@
           break;
         }
       }
-      
+
       if (keywordFound) {
         return `${keywordFound}: ${words.slice(0, 4).join(' ')}...`;
       }
-      
+
       // Default: first few words
       return words.join(' ') + (message.split(' ').length > 8 ? '...' : '');
     }
@@ -259,28 +267,28 @@
     function renderChatSessions() {
       const sessionsContainer = document.getElementById('chat-sessions');
       sessionsContainer.innerHTML = '';
-      
+
       if (chatSessions.length === 0) {
         sessionsContainer.innerHTML = '<div class="no-sessions">No chats yet</div>';
         return;
       }
-      
+
       chatSessions.forEach(session => {
         const sessionElement = document.createElement('div');
         sessionElement.className = 'chat-session';
         if (session.id === currentSessionId) {
           sessionElement.classList.add('active');
         }
-        
+
         const sessionName = session.name || `Chat`;
-        const lastMessage = session.messages.length > 0 
+        const lastMessage = session.messages.length > 0
           ? (session.lastMessage || session.messages[session.messages.length - 1].text.substring(0, 30) + '...')
           : 'No messages yet';
-        
+
         const date = new Date(session.timestamp);
         const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         const dateString = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-        
+
         sessionElement.innerHTML = `
           <div class="session-content" data-session-id="${session.id}">
             <div class="session-name">${sessionName}</div>
@@ -294,21 +302,21 @@
             </svg>
           </button>
         `;
-        
+
         sessionsContainer.appendChild(sessionElement);
-        
+
         // Add click event to switch session
         sessionElement.querySelector('.session-content').addEventListener('click', (e) => {
           e.stopPropagation();
           switchSession(session.id);
         });
-        
+
         // Add delete button event
         sessionElement.querySelector('.session-delete-btn').addEventListener('click', (e) => {
           e.stopPropagation();
           showDeleteConfirm(session.id);
         });
-        
+
         // Double click to rename
         sessionElement.querySelector('.session-name').addEventListener('dblclick', (e) => {
           e.stopPropagation();
@@ -336,10 +344,10 @@
     function renderChatHistory() {
       const messages = document.getElementById('messages');
       messages.innerHTML = '';
-      
+
       const currentSession = getCurrentSession();
       if (!currentSession) return;
-      
+
       let startIdx = Math.max(0, currentSession.messages.length - MAX_HISTORY);
       currentSession.messages.slice(startIdx).forEach((message) => {
         addMessageToUI(message.text, message.role);
@@ -351,12 +359,12 @@
       event.preventDefault();
       const userInput = document.getElementById("user-input").value;
       if (!userInput.trim()) return;
-      
+
       // Activate pending session if exists (from New Chat button)
       if (pendingSession) {
         activatePendingSession();
       }
-      
+
       addMessageToUI(userInput, "user");
       saveMessageToSession(userInput, "user");
       fetchGroqResponse(userInput);
@@ -404,7 +412,7 @@
         messages.appendChild(profile);
         messages.appendChild(messageElement);
       }
-      
+
       // Scroll to bottom
       messages.scrollTop = messages.scrollHeight;
     }
@@ -412,57 +420,57 @@
     function saveMessageToSession(message, sender) {
       const currentSession = getCurrentSession();
       if (!currentSession) return;
-      
-      currentSession.messages.push({ 
-        role: sender === "user" ? "user" : "assistant", 
-        text: message 
+
+      currentSession.messages.push({
+        role: sender === "user" ? "user" : "assistant",
+        text: message
       });
-      
+
       // Update session last message and timestamp
       currentSession.lastMessage = message.substring(0, 30) + '...';
       currentSession.timestamp = Date.now();
-      
+
       // Auto-name session based on first user message if not already named
       if (currentSession.messages.length === 1 && currentSession.name.startsWith('Chat ')) {
         const firstMessage = currentSession.messages[0].text;
         const autoName = generateSessionNameFromMessage(firstMessage);
         currentSession.name = autoName;
       }
-      
+
       // Limit messages per session
       if (currentSession.messages.length > MAX_HISTORY) {
         currentSession.messages = currentSession.messages.slice(currentSession.messages.length - MAX_HISTORY);
       }
-      
+
       localStorage.setItem('chatSessions', JSON.stringify(chatSessions));
       renderChatSessions();
     }
 
     async function fetchGroqResponse(message) {
       console.log(`Sending message to Groq API: ${message}`);
-      
+
       // Use relative path since everything is on the same domain
       const apiUrl = '/api/chat';
-      
+
       // Create a single message container that will be updated
       const messageId = 'msg-' + Date.now();
       const profile = document.createElement('div');
       profile.classList.add('profile', 'assistant-profile');
       profile.innerHTML = `<img src="./assets/icon.png" alt="AI Profile Picture" class="profile-picture"><p class="name">HoradrimAI</p>`;
-      
+
       const messageElement = document.createElement("div");
       messageElement.id = messageId;
       messageElement.classList.add("message", "assistant-message");
       messageElement.innerHTML = '<span class="typing-indicator"><span>.</span><span>.</span><span>.</span></span>';
-      
+
       const messages = document.getElementById("messages");
       messages.appendChild(profile);
       messages.appendChild(messageElement);
       messages.scrollTop = messages.scrollHeight;
-      
+
       // Reduce max tokens for low memory mode
       const maxTokens = lowMemoryMode ? 1024 : 2048;
-      
+
       // Build messages array following Groq format
       const messagesArray = [
         {
@@ -488,7 +496,7 @@
           - Ubers and Pandemonium Event`
         }
       ];
-      
+
       // Add chat history from current session (last 10 messages for context)
       const currentSession = getCurrentSession();
       if (currentSession) {
@@ -500,7 +508,7 @@
           });
         });
       }
-      
+
       // Add the current user message
       messagesArray.push({
         role: "user",
@@ -517,7 +525,7 @@
 
       try {
         console.log('Sending request to:', apiUrl);
-        
+
         const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
@@ -527,7 +535,7 @@
         });
 
         console.log('Response status:', response.status);
-        
+
         if (!response.ok) {
           let errorText;
           try {
@@ -536,7 +544,7 @@
           } catch (e) {
             errorText = 'Failed to read error response';
           }
-          
+
           // Try to parse JSON error if possible
           let errorMessage = `HTTP error ${response.status}`;
           try {
@@ -545,15 +553,15 @@
           } catch {
             errorMessage = errorText || `HTTP error ${response.status}`;
           }
-          
+
           // Update the existing message with error
           const botMessage = `⚠️ Error: ${errorMessage}`;
           const formattedMessage = marked.parse(botMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
-          
+
           // Save error message to session
           saveMessageToSession(botMessage, "assistant");
-          
+
           return;
         }
 
@@ -564,41 +572,41 @@
           const botMessage = result.choices[0].message.content.trim();
           const formattedMessage = marked.parse(botMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
-          
+
           // Save to session - ONLY ONCE
           saveMessageToSession(botMessage, "assistant");
         } else if (result.error) {
           const errorMessage = `⚠️ API Error: ${result.error.message || result.error}`;
           const formattedMessage = marked.parse(errorMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
-          
+
           saveMessageToSession(errorMessage, "assistant");
         } else {
           const errorMessage = "I'm sorry, I received an unexpected response. Please try again.";
           const formattedMessage = marked.parse(errorMessage);
           document.getElementById(messageId).innerHTML = formattedMessage;
-          
+
           saveMessageToSession(errorMessage, "assistant");
         }
       } catch (error) {
         console.error("Fetch Error:", error);
-        
+
         const errorMessage = `⚠️ Network Error: ${error.message}. Please check your connection.`;
         const formattedMessage = marked.parse(errorMessage);
-        
+
         if (document.getElementById(messageId)) {
           document.getElementById(messageId).innerHTML = formattedMessage;
         } else {
           // If message element was removed, add a new one
           addMessageToUI(errorMessage, "assistant");
         }
-        
+
         saveMessageToSession(errorMessage, "assistant");
       }
-      
+
       // Update chat sessions list
       renderChatSessions();
-      
+
       // Scroll to bottom
       messages.scrollTop = messages.scrollHeight;
     }
@@ -640,11 +648,11 @@
     // ---- Modal Event Listeners ----
     // Clear chat modal
     document.getElementById('clear-btn').addEventListener('click', showClearConfirm);
-    
+
     document.getElementById('confirmClearNo').addEventListener('click', () => {
       document.getElementById('confirmClearModal').classList.remove('active');
     });
-    
+
     document.getElementById('confirmClearYes').addEventListener('click', () => {
       const currentSession = getCurrentSession();
       if (currentSession) {
@@ -659,7 +667,7 @@
     document.getElementById('confirmDeleteNo').addEventListener('click', () => {
       document.getElementById('confirmDeleteModal').classList.remove('active');
     });
-    
+
     document.getElementById('confirmDeleteYes').addEventListener('click', () => {
       const modal = document.getElementById('confirmDeleteModal');
       const sessionId = modal.dataset.sessionId;
@@ -671,7 +679,7 @@
     document.getElementById('renameCancel').addEventListener('click', () => {
       document.getElementById('renameModal').classList.remove('active');
     });
-    
+
     document.getElementById('renameConfirm').addEventListener('click', () => {
       const modal = document.getElementById('renameModal');
       const sessionId = modal.dataset.sessionId;
@@ -679,7 +687,7 @@
       updateSessionName(sessionId, newName);
       modal.classList.remove('active');
     });
-    
+
     // Handle Enter key in rename input
     document.getElementById('renameInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -691,19 +699,19 @@
 
     // New chat modal
     document.getElementById('new-chat-btn').addEventListener('click', showNewChatConfirm);
-    
+
     document.getElementById('newChatCancel').addEventListener('click', () => {
       document.getElementById('newChatModal').classList.remove('active');
     });
-    
+
     document.getElementById('newChatConfirm').addEventListener('click', () => {
       createNewSession(); // Creates pending session
       document.getElementById('newChatModal').classList.remove('active');
-      
+
       // Clear current chat display
       document.getElementById('messages').innerHTML = '';
       pendingSession = pendingSession || createNewSession();
-      
+
       // Update UI
       renderChatSessions();
     });
@@ -721,32 +729,54 @@
     renderChatSessions();
     renderChatHistory();
   </script>
-  
+
   <style>
     /* Import Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap');
 
     body {
-      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-      background: linear-gradient(135deg, #e3eeff 0%, #b8cbe9 100%);
-      color: #222;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #301934;
+      /* VoltaOS base purple */
+      color: #e4b1ef;
+      /* VoltaOS light purple text */
       display: flex;
       margin: 0;
       padding: 0;
       height: 100vh;
       overflow: hidden;
+      position: relative;
     }
 
-    /* Sidebar Styles */
+    /* Add subtle background pattern */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(134, 11, 249, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(187, 79, 246, 0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Sidebar Styles - VoltaOS Purple Acrylic */
     #sidebar {
       width: 256px;
       min-width: 256px;
-      background: linear-gradient(135deg, #d0e2ff 0%, #a8c6f0 100%);
-      border-right: 1.5px solid #b7cef2;
+      background: rgba(52, 17, 75, 0.7);
+      /* Purple acrylic */
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border-right: 1px solid rgba(187, 79, 246, 0.3);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 2px 0 10px rgba(120, 160, 220, 0.1);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+      z-index: 100;
     }
 
     .sidebar-header {
@@ -754,8 +784,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1.5px solid #b7cef2;
-      background: linear-gradient(to bottom, #e1f1ff 70%, #d0e6fa 100%);
+      border-bottom: 1px solid rgba(187, 79, 246, 0.2);
+      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.15), rgba(187, 79, 246, 0.1));
       min-height: 60px;
       box-sizing: border-box;
     }
@@ -763,15 +793,16 @@
     .sidebar-header h3 {
       margin: 0;
       font-size: 16px;
-      color: #194e88;
+      color: rgba(228, 177, 239, 0.9);
       font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .sidebar-btn {
-      background: linear-gradient(to bottom, #e1f1ff 80%, #b3d6fb 100%);
-      border: 1.5px solid #a4cfff;
-      color: #1859a9;
-      border-radius: 8px;
+      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
+      border: 1px solid rgba(134, 11, 249, 0.4);
+      color: rgba(228, 177, 239, 0.9);
+      border-radius: 6px;
       cursor: pointer;
       font-weight: 500;
       font-size: 12px;
@@ -783,13 +814,24 @@
       min-width: 32px;
       min-height: 32px;
       margin-left: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .sidebar-btn:hover {
-      background: linear-gradient(to bottom, #d0eaff 80%, #a1c7f7 100%);
-      border-color: #357ae8;
-      color: #1867c0;
+      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
+      border-color: rgba(228, 177, 239, 0.6);
       transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .sidebar-btn:active {
+      transform: translateY(0);
+    }
+
+    .sidebar-btn svg {
+      fill: rgba(228, 177, 239, 0.9);
+      width: 16px;
+      height: 16px;
     }
 
     #chat-sessions {
@@ -797,7 +839,7 @@
       overflow-y: auto;
       padding: 10px;
       scrollbar-width: thin;
-      scrollbar-color: #a4cfff transparent;
+      scrollbar-color: rgba(134, 11, 249, 0.5) transparent;
     }
 
     #chat-sessions::-webkit-scrollbar {
@@ -809,22 +851,26 @@
     }
 
     #chat-sessions::-webkit-scrollbar-thumb {
-      background: #a4cfff;
+      background: rgba(134, 11, 249, 0.5);
       border-radius: 3px;
+    }
+
+    #chat-sessions::-webkit-scrollbar-thumb:hover {
+      background: rgba(150, 33, 233, 0.6);
     }
 
     .no-sessions {
       text-align: center;
-      color: #8a94a6;
+      color: rgba(228, 177, 239, 0.6);
       font-style: italic;
       padding: 20px;
       font-size: 14px;
     }
 
     .chat-session {
-      background: linear-gradient(120deg, #f3faff 85%, #e2f2ff 100%);
-      border: 1.5px solid #c5e2fa;
-      border-radius: 10px;
+      background: rgba(52, 17, 75, 0.6);
+      border: 1px solid rgba(187, 79, 246, 0.3);
+      border-radius: 8px;
       padding: 12px;
       margin-bottom: 10px;
       cursor: pointer;
@@ -832,22 +878,36 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      backdrop-filter: blur(2.5px);
+      backdrop-filter: blur(10px);
       min-height: 70px;
       box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-session::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(228, 177, 239, 0.2), transparent);
     }
 
     .chat-session:hover {
-      background: linear-gradient(120deg, #e7f3ff 85%, #d0e6fa 100%);
-      border-color: #67a7ff;
+      background: rgba(72, 13, 141, 0.7);
+      border-color: rgba(228, 177, 239, 0.5);
       transform: translateX(2px);
-      box-shadow: 0 2px 8px rgba(120, 160, 220, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .chat-session.active {
-      background: linear-gradient(120deg, #d0e6ff 85%, #b3d6fb 100%);
-      border-color: #357ae8;
-      box-shadow: 0 2px 10px rgba(74, 164, 255, 0.2);
+      background: rgba(72, 13, 141, 0.8);
+      border-color: rgba(228, 177, 239, 0.6);
+      box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(228, 177, 239, 0.2) inset;
     }
 
     .session-content {
@@ -857,16 +917,17 @@
 
     .session-name {
       font-weight: 600;
-      color: #194e88;
+      color: rgba(228, 177, 239, 0.95);
       font-size: 14px;
       margin-bottom: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .session-preview {
-      color: #5f6368;
+      color: rgba(228, 177, 239, 0.7);
       font-size: 12px;
       white-space: nowrap;
       overflow: hidden;
@@ -875,14 +936,14 @@
     }
 
     .session-time {
-      color: #8a94a6;
+      color: rgba(228, 177, 239, 0.5);
       font-size: 11px;
     }
 
     .session-delete-btn {
       background: transparent;
       border: none;
-      color: #8a94a6;
+      color: rgba(228, 177, 239, 0.6);
       cursor: pointer;
       padding: 4px;
       border-radius: 4px;
@@ -900,11 +961,17 @@
     }
 
     .session-delete-btn:hover {
-      color: #dc3545;
-      background: rgba(220, 53, 69, 0.1);
+      color: rgba(255, 115, 115, 0.9);
+      background: rgba(255, 115, 115, 0.1);
     }
 
-    /* Main Chat Container */
+    .session-delete-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* Main Chat Container - VoltaOS Purple Acrylic */
     #chat-container {
       flex: 1;
       width: 100%;
@@ -914,23 +981,58 @@
       border-radius: 0;
       box-shadow: none;
       border: none;
-      background: rgba(215, 232, 255, 0.85);
+      background: rgba(48, 25, 52, 0.6);
+      /* Desktop background */
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Add subtle desktop pattern to chat area */
+    #chat-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1" fill="rgba(228, 177, 239, 0.03)"/></svg>');
+      background-size: 100px 100px;
+      opacity: 0.5;
+      pointer-events: none;
     }
 
     #chat-box {
       flex-grow: 1;
       overflow-y: auto;
-      padding: 12px;
-      scrollbar-width: none;
-      background: rgba(232, 244, 255, 0.45);
-      box-shadow: 0 2px 12px 0 rgba(120, 160, 220, 0.08) inset;
+      padding: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(134, 11, 249, 0.5) transparent;
+      background: transparent;
+      position: relative;
+      z-index: 1;
     }
-    
+
     #chat-box::-webkit-scrollbar {
-      display: none;
+      width: 8px;
+    }
+
+    #chat-box::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 4px;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb {
+      background: rgba(134, 11, 249, 0.5);
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    #chat-box::-webkit-scrollbar-thumb:hover {
+      background: rgba(150, 33, 233, 0.6);
+      background-clip: content-box;
     }
 
     .typing-indicator {
@@ -938,274 +1040,354 @@
       align-items: center;
       height: 20px;
     }
-    
+
     .typing-indicator span {
       height: 8px;
       width: 8px;
       margin: 0 2px;
-      background-color: #666;
+      background-color: rgba(228, 177, 239, 0.8);
       border-radius: 50%;
       display: inline-block;
       opacity: 0.4;
       animation: typing 1.4s infinite both;
     }
-    
+
     .typing-indicator span:nth-child(1) {
       animation-delay: 0s;
     }
-    
+
     .typing-indicator span:nth-child(2) {
       animation-delay: 0.2s;
     }
-    
+
     .typing-indicator span:nth-child(3) {
       animation-delay: 0.4s;
     }
-    
+
     @keyframes typing {
-      0%, 100% {
+
+      0%,
+      100% {
         opacity: 0.4;
         transform: translateY(0);
       }
+
       50% {
         opacity: 1;
         transform: translateY(-3px);
       }
     }
-    
-    .loading-indicator {
-      color: #666;
-      font-style: italic;
-      padding: 10px;
-      background: #f5f5f5;
-      border-radius: 8px;
-      margin: 10px 0;
-      animation: pulse 1.5s infinite;
-    }
-    
-    @keyframes pulse {
-      0% { opacity: 0.6; }
-      50% { opacity: 1; }
-      100% { opacity: 0.6; }
-    }
-    
+
+    /* Profile Styles */
     .profile {
       display: flex;
       align-items: center;
-      margin: 10px 0;
+      margin: 16px 0 8px 0;
     }
-    
+
     .profile-picture {
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      margin-right: 10px;
+      margin-right: 12px;
       object-fit: cover;
-      box-shadow: 0px 2px 6px rgba(120, 160, 220, 0.13);
-      border: 1.5px solid #b3d1f7;
+      border: 1.5px solid rgba(228, 177, 239, 0.4);
+      background: rgba(52, 17, 75, 0.6);
+      padding: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
-    
+
     .user-profile {
       justify-content: flex-end;
       text-align: right;
     }
-    
+
     .assistant-profile {
       justify-content: flex-start;
       text-align: left;
     }
-    
-    .bot-profile p,
-    .user-profile p {
-      margin: 0;
-      font-size: 12px;
-      font-weight: 500;
-      color: #5f6368;
-    }
-    
-    .user-profile,
-    .bot-profile {
-      align-self: flex-start;
-      text-align: left;
-    }
-    
+
     .name {
-      font-weight: bold;
+      font-weight: 600;
       margin: 0;
-      font-size: 0.9em;
+      font-size: 14px;
+      color: rgba(228, 177, 239, 0.9);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
-    
+
+    /* Message Styles - VoltaOS Acrylic */
     .message {
-      padding: 8px 12px;
-      border-radius: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
       max-width: 75%;
-      margin: 5px 0 12px 0;
-      line-height: 1.4;
-      font-size: 12px;
+      margin: 0 0 20px 0;
+      line-height: 1.5;
+      font-size: 14px;
       text-align: left;
-      backdrop-filter: blur(2.5px);
-      filter: drop-shadow(0 2px 3px rgba(140,180,230,0.08));
-      box-shadow: 0 2px 9px rgba(140, 180, 230, 0.11), 0 1.5px 0 #e6f2ff inset;
+      position: relative;
+      word-wrap: break-word;
     }
-    
+
+    .message::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: inherit;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: inherit;
+      z-index: -1;
+    }
+
     .user-message {
       align-self: flex-end;
-      background: linear-gradient(120deg, #e7f3ff 70%, #d0e6fa 100%);
-      color: #194e88;
-      border-radius: 12px 12px 4px 12px;
-      border: 1px solid #b4d1f7;
+      background: rgba(72, 13, 141, 0.6);
+      border: 1px solid rgba(134, 11, 249, 0.4);
+      color: rgba(228, 177, 239, 0.95);
+      border-radius: 10px 10px 4px 10px;
       margin-left: auto;
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(228, 177, 239, 0.1) inset;
     }
-    
+
     .assistant-message {
       align-self: flex-start;
-      background: linear-gradient(120deg, #f3faff 85%, #e2f2ff 100%);
-      color: #20415e;
-      border-radius: 12px 12px 12px 4px;
-      border: 1px solid #c5e2fa;
+      background: rgba(52, 17, 75, 0.7);
+      border: 1px solid rgba(187, 79, 246, 0.3);
+      color: rgba(228, 177, 239, 0.9);
+      border-radius: 10px 10px 10px 4px;
       margin-right: auto;
+      box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(228, 177, 239, 0.05) inset;
     }
-    
+
+    /* Markdown Styling */
     .assistant-message pre {
-      background: linear-gradient(90deg, #eaf4ff 80%, #cbe3ff 100%);
-      color: #2c3e50;
-      padding: 8px;
+      background: rgba(48, 25, 52, 0.8);
+      color: rgba(228, 177, 239, 0.9);
+      padding: 12px;
       border-radius: 6px;
       overflow-x: auto;
       font-family: 'Consolas', 'Courier New', Courier, monospace;
-      font-size: 12px;
+      font-size: 13px;
       line-height: 1.4;
       white-space: pre-wrap;
-      border: 1.5px solid #b3d1f7;
-      box-shadow: 0 1.5px 7px rgba(120, 160, 220, 0.09) inset;
+      border: 1px solid rgba(134, 11, 249, 0.3);
+      margin: 8px 0;
     }
-    
+
     .assistant-message code {
-      background: #f4f4f4;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: 'Courier New', monospace;
+      background: rgba(72, 13, 141, 0.4);
+      color: rgba(228, 177, 239, 0.9);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Courier New', Courier, monospace;
+      font-size: 13px;
+      border: 1px solid rgba(134, 11, 249, 0.2);
     }
-    
+
+    .assistant-message h1,
+    .assistant-message h2,
+    .assistant-message h3,
+    .assistant-message h4 {
+      color: rgba(228, 177, 239, 0.95);
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .assistant-message p {
+      margin: 8px 0;
+    }
+
+    .assistant-message ul,
+    .assistant-message ol {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+
+    .assistant-message li {
+      margin: 4px 0;
+    }
+
+    .assistant-message strong {
+      color: rgba(228, 177, 239, 0.95);
+      font-weight: 600;
+    }
+
+    .assistant-message em {
+      color: rgba(228, 177, 239, 0.8);
+      font-style: italic;
+    }
+
+    .assistant-message a {
+      color: rgba(187, 79, 246, 0.9);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(187, 79, 246, 0.3);
+      transition: all 0.2s;
+    }
+
+    .assistant-message a:hover {
+      color: rgba(228, 177, 239, 0.95);
+      border-bottom-color: rgba(228, 177, 239, 0.6);
+    }
+
     .assistant-message table {
       border-collapse: collapse;
-      margin: 10px 0;
+      margin: 12px 0;
+      width: 100%;
+      background: rgba(48, 25, 52, 0.6);
+      border: 1px solid rgba(134, 11, 249, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
     }
-    
+
     .assistant-message th,
     .assistant-message td {
-      border: 1px solid #ddd;
-      padding: 8px;
+      padding: 8px 12px;
       text-align: left;
+      border: 1px solid rgba(134, 11, 249, 0.2);
     }
-    
+
     .assistant-message th {
-      background: #f2f2f2;
-      font-weight: bold;
+      background: rgba(72, 13, 141, 0.4);
+      color: rgba(228, 177, 239, 0.95);
+      font-weight: 600;
     }
-    
-    /* Aero Input Bar (Mobile/Small) */
+
+    .assistant-message td {
+      color: rgba(228, 177, 239, 0.8);
+    }
+
+    .assistant-message blockquote {
+      border-left: 3px solid rgba(134, 11, 249, 0.5);
+      margin: 12px 0;
+      padding-left: 12px;
+      color: rgba(228, 177, 239, 0.8);
+      font-style: italic;
+    }
+
+    /* Chat Input Area - VoltaOS Acrylic */
     #chat-form {
       display: flex;
       align-items: center;
-      padding: 8px;
-      background: linear-gradient(to top, #e1f1ff 70%, #f6faff 100%);
-      border-top: 1.5px solid #b7cef2;
-      box-shadow: 0 -2px 14px 0 rgba(120, 160, 220, 0.07);
+      padding: 12px;
+      background: rgba(48, 25, 52, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(187, 79, 246, 0.2);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 100;
     }
 
-    /* Aero Input (Mobile/Small) */
+    /* Chat Input */
     #user-input {
       flex-grow: 1;
-      padding: 8px 12px;
-      border: 1.5px solid #b2cbe7;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.95);
-      color: #20415e;
-      font-size: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(187, 79, 246, 0.3);
+      border-radius: 8px;
+      background: rgba(52, 17, 75, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(228, 177, 239, 0.95);
+      font-size: 14px;
       outline: none;
       resize: none;
-      box-shadow: 0 1.5px 8px 0 rgba(120, 160, 220, 0.06) inset;
-    }
-    
-    #user-input:focus {
-      border-color: #67a7ff;
-      box-shadow: 0 0 0 3px #c9e2ff;
+      min-height: 20px;
+      max-height: 120px;
+      line-height: 1.5;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      transition: all 0.2s;
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.1) inset,
+        0 0 0 1px rgba(228, 177, 239, 0.05) inset;
     }
 
-    /* Aero Buttons (Mobile/Small) */
-    button {
-      padding: 8px 12px;
-      margin-left: 8px;
-      background: linear-gradient(to bottom, #e1f1ff 80%, #b3d6fb 100%);
-      border: 1.5px solid #a4cfff;
-      color: #1859a9;
-      border-radius: 14px;
+    #user-input::placeholder {
+      color: rgba(228, 177, 239, 0.5);
+    }
+
+    #user-input:focus {
+      border-color: rgba(228, 177, 239, 0.6);
+      background: rgba(52, 17, 75, 0.7);
+      box-shadow:
+        0 0 0 2px rgba(134, 11, 249, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2) inset;
+    }
+
+    /* Buttons - VoltaOS Style */
+    #chat-form button {
+      padding: 10px 14px;
+      margin-left: 10px;
+      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
+      border: 1px solid rgba(134, 11, 249, 0.4);
+      color: rgba(228, 177, 239, 0.95);
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 12px;
-      box-shadow: 0px 2px 8px rgba(74, 164, 255, 0.09);
+      font-size: 13px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s, box-shadow 0.2s, border 0.2s;
-    }
-    
-    button:hover {
-      background: linear-gradient(to bottom, #d0eaff 80%, #a1c7f7 100%);
-      border-color: #357ae8;
-      color: #1867c0;
-      box-shadow: 0 0 8px #b2d7ff;
-    }
-    
-    button:active {
-      background: linear-gradient(to bottom, #b6d7ff 80%, #82b3ef 100%);
-      color: #144d8e;
-    }
-    
-    button svg {
-      fill: currentColor;
-      width: 1em;
-      height: 1em;
+      transition: all 0.2s;
+      min-width: 40px;
+      min-height: 40px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    /* Modal Styles */
+    #chat-form button:hover {
+      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
+      border-color: rgba(228, 177, 239, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    #chat-form button:active {
+      transform: translateY(0);
+    }
+
+    #chat-form button svg {
+      fill: rgba(228, 177, 239, 0.95);
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Clear button specific styling */
+    #clear-btn {
+      background: linear-gradient(to bottom, rgba(72, 13, 141, 0.4), rgba(52, 17, 75, 0.3));
+      border-color: rgba(187, 79, 246, 0.3);
+    }
+
+    #clear-btn:hover {
+      background: linear-gradient(to bottom, rgba(96, 21, 189, 0.5), rgba(72, 13, 141, 0.4));
+    }
+
+    /* Modal Styles - VoltaOS Acrylic */
     .confirm-modal {
       display: none;
       position: fixed;
-      z-index: 1001;
+      z-index: 9999;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 30, 60, 0.4);
-      backdrop-filter: blur(3px);
+      background: rgba(48, 25, 52, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
     .confirm-modal.active {
       display: flex;
-    }
-
-    .confirm-modal-content {
-      background: linear-gradient(180deg, #f9fbfe 80%, #e6e9ec 100%);
-      border: 1.5px solid #c2c5ca;
-      border-radius: 14px;
-      box-shadow: 
-        0 0 0 1.5px #fff inset,
-        0 0.5px 0 #e4eefa inset,
-        0 8px 32px 4px rgba(120,180,240,0.2),
-        0 2px 20px rgba(0, 0, 0, 0.1);
-      outline: 2.5px solid #e2eef9;
-      outline-offset: -7px;
-      min-width: 300px;
-      max-width: 90vw;
-      padding: 28px;
-      text-align: center;
-      color: #254a7c;
-      animation: modalFadeIn 0.2s ease-out;
+      animation: modalFadeIn 0.3s ease-out;
     }
 
     @keyframes modalFadeIn {
@@ -1213,23 +1395,53 @@
         opacity: 0;
         transform: translateY(-20px) scale(0.95);
       }
+
       to {
         opacity: 1;
         transform: translateY(0) scale(1);
       }
     }
 
+    .confirm-modal-content {
+      background: rgba(52, 17, 75, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(187, 79, 246, 0.4);
+      border-radius: 10px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(134, 11, 249, 0.1) inset,
+        0 0 20px rgba(134, 11, 249, 0.2);
+      min-width: 320px;
+      max-width: 90vw;
+      padding: 24px;
+      text-align: center;
+      color: rgba(228, 177, 239, 0.95);
+      position: relative;
+    }
+
+    .confirm-modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(228, 177, 239, 0.2), transparent);
+    }
+
     .confirm-modal-content p {
       margin: 0 0 20px 0;
       font-size: 16px;
-      color: #1b2f4f;
+      color: rgba(228, 177, 239, 0.95);
       font-weight: 500;
-      line-height: 1.4;
+      line-height: 1.5;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .modal-subtitle {
       font-size: 14px !important;
-      color: #5f6368 !important;
+      color: rgba(228, 177, 239, 0.7) !important;
       font-weight: 400 !important;
       margin-top: 8px !important;
     }
@@ -1237,20 +1449,28 @@
     #renameInput {
       width: 100%;
       padding: 12px 16px;
-      border: 1.5px solid #b2cbe7;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.95);
-      color: #20415e;
+      border: 1px solid rgba(187, 79, 246, 0.3);
+      border-radius: 6px;
+      background: rgba(52, 17, 75, 0.6);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: rgba(228, 177, 239, 0.95);
       font-size: 14px;
       outline: none;
       margin: 15px 0 20px 0;
-      box-shadow: 0 1.5px 8px 0 rgba(120, 160, 220, 0.06) inset;
       box-sizing: border-box;
+      transition: all 0.2s;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    #renameInput::placeholder {
+      color: rgba(228, 177, 239, 0.5);
     }
 
     #renameInput:focus {
-      border-color: #67a7ff;
-      box-shadow: 0 0 0 3px #c9e2ff;
+      border-color: rgba(228, 177, 239, 0.6);
+      background: rgba(52, 17, 75, 0.7);
+      box-shadow: 0 0 0 2px rgba(134, 11, 249, 0.3);
     }
 
     .modal-buttons {
@@ -1263,59 +1483,64 @@
     .confirm-modal-content button {
       min-width: 100px;
       padding: 10px 24px;
-      border-radius: 10px;
-      border: 1.5px solid;
+      border-radius: 6px;
+      border: 1px solid rgba(134, 11, 249, 0.4);
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
+      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
+      color: rgba(228, 177, 239, 0.95);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .confirm-modal-content button:focus {
-      outline: 2px solid #3e90e8;
-      outline-offset: 2px;
+    .confirm-modal-content button:hover {
+      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
+      border-color: rgba(228, 177, 239, 0.6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
+    .confirm-modal-content button:active {
+      transform: translateY(0);
+    }
+
+    /* Yes/Confirm buttons */
     #confirmClearYes,
     #confirmDeleteYes,
     #renameConfirm,
     #newChatConfirm {
-      background: linear-gradient(180deg, #e8f6ff 60%, #c1e1fa 100%);
-      color: #165b90;
-      border-color: #72c6ff;
+      background: linear-gradient(to bottom, rgba(134, 11, 249, 0.4), rgba(72, 13, 141, 0.3));
+      border-color: rgba(134, 11, 249, 0.5);
     }
 
     #confirmClearYes:hover,
     #confirmDeleteYes:hover,
     #renameConfirm:hover,
     #newChatConfirm:hover {
-      background: linear-gradient(180deg,#c7eafd 60%,#b3d9f5 100%);
-      border-color: #43a2e6;
-      color: #003d70;
-      transform: translateY(-1px);
+      background: linear-gradient(to bottom, rgba(150, 33, 233, 0.5), rgba(96, 21, 189, 0.4));
     }
 
+    /* No/Cancel buttons */
     #confirmClearNo,
     #confirmDeleteNo,
     #renameCancel,
     #newChatCancel {
-      background: linear-gradient(180deg,#f8fafc 60%,#e3eaf4 100%);
-      color: #174181;
-      border-color: #b5c6db;
+      background: linear-gradient(to bottom, rgba(52, 17, 75, 0.4), rgba(48, 25, 52, 0.3));
+      border-color: rgba(187, 79, 246, 0.3);
     }
 
     #confirmClearNo:hover,
     #confirmDeleteNo:hover,
     #renameCancel:hover,
     #newChatCancel:hover {
-      background: linear-gradient(180deg,#e7eaf0 60%,#d2d6db 100%);
-      color: #235a9d;
-      border-color: #357ae8;
-      transform: translateY(-1px);
+      background: linear-gradient(to bottom, rgba(72, 13, 141, 0.5), rgba(52, 17, 75, 0.4));
     }
 
-    .confirm-modal-content button:active {
-      transform: translateY(1px);
+    /* Selection styling */
+    ::selection {
+      background: rgba(134, 11, 249, 0.5);
+      color: rgba(228, 177, 239, 0.95);
     }
 
     /* PERFORMANCE MODE: Low-Memory Devices */
@@ -1330,9 +1555,51 @@
     body.low-memory .chat-session,
     body.low-memory .confirm-modal {
       backdrop-filter: none !important;
-      box-shadow: none !important;
-      filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    body.low-memory .message::before {
+      display: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 220px;
+        min-width: 220px;
+      }
+
+      .message {
+        max-width: 85%;
+      }
+
+      .confirm-modal-content {
+        min-width: 280px;
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #sidebar {
+        width: 180px;
+        min-width: 180px;
+      }
+
+      .sidebar-header h3 {
+        font-size: 14px;
+      }
+
+      .session-name {
+        font-size: 12px;
+      }
+
+      .message {
+        max-width: 90%;
+        font-size: 13px;
+        padding: 10px 12px;
+      }
     }
   </style>
 </body>
+
 </html>

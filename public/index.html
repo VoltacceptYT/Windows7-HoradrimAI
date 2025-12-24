@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoltaOS Desktop Environment</title>
+    <title>VoltaOS</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
         * {
             box-sizing: border-box;
@@ -103,6 +105,9 @@
             border: 1px solid rgba(228, 177, 239, 0.2);
             transition: all 0.2s ease;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .start-button:hover {
@@ -124,9 +129,9 @@
                 inset 0 0 0 1px rgba(228, 177, 239, 0.2);
         }
 
-        .start-button .taskbar-app-icon {
-            width: 28px;
-            height: 28px;
+        .start-button i {
+            font-size: 24px;
+            color: rgba(228, 177, 239, 0.9);
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
         }
 
@@ -196,11 +201,9 @@
         }
 
         .search-icon {
-            width: 20px;
-            height: 20px;
             margin-right: 10px;
-            fill: rgba(228, 177, 239, 0.7);
-            flex-shrink: 0;
+            color: rgba(228, 177, 239, 0.7);
+            font-size: 20px;
         }
 
         #app-search {
@@ -323,7 +326,7 @@
             font-style: italic;
         }
 
-        /* Close button for start menu (optional) */
+        /* Close button for start menu */
         .start-menu-close {
             position: absolute;
             top: 12px;
@@ -609,10 +612,8 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .app-close svg {
-            width: 10px;
-            height: 10px;
-            fill: currentColor;
+        .app-close i {
+            font-size: 12px;
             filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
             transition: all 0.2s ease;
         }
@@ -903,12 +904,8 @@
         }
 
         .alert-title-icon {
-            width: 18px;
-            height: 18px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23e4b1ef"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            font-size: 18px;
+            color: rgba(228, 177, 239, 0.9);
             filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
         }
 
@@ -967,10 +964,8 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        .alert-close-button svg {
-            width: 10px;
-            height: 10px;
-            fill: currentColor;
+        .alert-close-button i {
+            font-size: 12px;
             filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
             transition: all 0.2s ease;
         }
@@ -1085,16 +1080,10 @@
             margin-bottom: 30px;
         }
 
-        .loading-logo svg {
+        .loading-logo i {
+            font-size: 80px;
+            color: rgba(134, 11, 249, 0.9);
             filter: drop-shadow(0 0 10px rgba(134, 11, 249, 0.4));
-        }
-
-        .loading-logo svg circle {
-            stroke: rgba(134, 11, 249, 0.9);
-        }
-
-        .loading-logo svg circle:nth-child(2) {
-            stroke: rgba(150, 33, 233, 0.7);
         }
 
         .loading-text h1 {
@@ -1204,22 +1193,7 @@
     <div id="loading-screen">
         <div class="loading-content">
             <div class="loading-logo">
-                <svg width="80" height="80" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(120, 160, 220, 0.9)" stroke-width="3"
-                        stroke-linecap="round">
-                        <animate attributeName="stroke-dasharray" values="0 300; 282 300; 0 300" dur="2.5s"
-                            repeatCount="indefinite" />
-                        <animate attributeName="stroke-dashoffset" values="0; -282; -564" dur="2.5s"
-                            repeatCount="indefinite" />
-                    </circle>
-                    <circle cx="50" cy="50" r="35" fill="none" stroke="rgba(100, 140, 200, 0.7)" stroke-width="2"
-                        stroke-linecap="round">
-                        <animate attributeName="stroke-dasharray" values="0 220; 220 220; 0 220" dur="2s"
-                            repeatCount="indefinite" begin="0.2s" />
-                        <animate attributeName="stroke-dashoffset" values="0; -220; -440" dur="2s"
-                            repeatCount="indefinite" begin="0.2s" />
-                    </circle>
-                </svg>
+                <i class="bi bi-cpu-fill"></i>
             </div>
             <div class="loading-text">
                 <h1>VoltaOS</h1>
@@ -1264,10 +1238,7 @@
     <div id="start-menu" class="start-menu">
         <div class="start-menu-header">
             <div class="search-container">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                        d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                </svg>
+                <i class="bi bi-search search-icon"></i>
                 <input type="text" id="app-search" placeholder="Search for an app..." autocomplete="off">
             </div>
         </div>
@@ -1280,7 +1251,7 @@
     </div>
 
     <script>
-        // Add to the beginning of index.html script
+        // Mobile redirect
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             window.location.href = 'mobile.html';
         }
@@ -1293,7 +1264,7 @@
                 this.message = message;
                 this.isOpen = false;
                 this.isActive = false;
-                this.offset = 0; // For staggering multiple alerts
+                this.offset = 0;
 
                 this.createWindow();
             }
@@ -1306,14 +1277,12 @@
                 this.windowElement.innerHTML = `
                     <div class="alert-header">
                         <div class="alert-title">
-                            <span class="alert-title-icon"></span>
+                            <i class="bi bi-info-circle alert-title-icon"></i>
                             <span>${this.title}</span>
                         </div>
                         <div class="alert-controls">
                             <button class="alert-close-button" id="${this.id}-close">
-                                <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52" xml:space="preserve">
-                                    <path d="m31 25.4 13-13.1c.6-.6.6-1.5 0-2.1l-2-2.1c-.6-.6-1.5-.6-2.1 0L26.8 21.2c-.4.4-1 .4-1.4 0L12.3 8c-.6-.6-1.5-.6-2.1 0l-2.1 2.1c-.6.6-.6 1.5 0 2.1l13.1 13.1c.4.4.4 1 0 1.4L8 39.9c-.6.6-.6 1.5 0 2.1l2.1 2.1c.6.6 1.5.6 2.1 0L25.3 31c.4-.4 1-.4 1.4 0l13.1 13.1c.6.6 1.5.6 2.1 0L44 42c.6-.6.6-1.5 0-2.1L31 26.8c-.4-.4-.4-1 0-1.4"/>
-                                </svg>
+                                <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -1381,7 +1350,7 @@
                 const alertCount = existingAlerts.length;
 
                 // Stagger position based on number of existing alerts
-                const staggerOffset = alertCount * 30; // 30px offset per alert
+                const staggerOffset = alertCount * 30;
 
                 // Center with stagger offset
                 this.windowElement.style.top = `calc(50% + ${staggerOffset}px)`;
@@ -1527,11 +1496,6 @@
             document.addEventListener('DOMContentLoaded', () => {
                 // Step 1: Initial setup
                 updateProgress('Starting...');
-
-                // Remove the old alert system creation
-                // alertSystem = new AlertWindow();
-                // Instead, we'll just note that the alert system is ready
-                updateProgress('Alert System');
 
                 // Override app manager creation to track progress
                 const originalAppManager = window.appManager;
@@ -1679,9 +1643,7 @@
                         </div>
                         <div class="app-controls">
                             <button class="app-close" id="${this.id}-close">
-                                <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" viewBox="0 0 52 52" xml:space="preserve">
-                                    <path d="m31 25.4 13-13.1c.6-.6.6-1.5 0-2.1l-2-2.1c-.6-.6-1.5-.6-2.1 0L26.8 21.2c-.4.4-1 .4-1.4 0L12.3 8c-.6-.6-1.5-.6-2.1 0l-2.1 2.1c-.6.6-.6 1.5 0 2.1l13.1 13.1c.4.4.4 1 0 1.4L8 39.9c-.6.6-.6 1.5 0 2.1l2.1 2.1c.6.6 1.5.6 2.1 0L25.3 31c.4-.4 1-.4 1.4 0l13.1 13.1c.6.6 1.5.6 2.1 0L44 42c.6-.6.6-1.5 0-2.1L31 26.8c-.4-.4-.4-1 0-1.4"/>
-                                </svg>
+                                <i class="bi bi-x-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -1706,7 +1668,7 @@
                 this.taskbarElement.className = 'taskbar-app';
                 this.taskbarElement.id = `${this.id}-taskbar`;
                 this.taskbarElement.dataset.appId = this.id;
-                this.taskbarElement.title = this.title; // Tooltip on hover
+                this.taskbarElement.title = this.title;
 
                 this.taskbarElement.innerHTML = `
                     <div class="taskbar-app-icon" style="background-image: url('${this.iconUrl}')"></div>

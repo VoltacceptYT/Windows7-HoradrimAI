@@ -1245,7 +1245,7 @@
     <div id="taskbar">
         <!-- Left Section: Start Button -->
         <div class="taskbar-left">
-            <div id="start-button" class="taskbar-app start-button" title="Start Menu">
+            <div id="start-button" class="taskbar-app" title="Start Menu">
                 <div class="taskbar-app-icon" style="background-image: url('assets/img/start.webp')"></div>
             </div>
             <div class="taskbar-apps" id="taskbar-apps">
@@ -1280,6 +1280,11 @@
     </div>
 
     <script>
+        // Add to the beginning of index.html script
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            window.location.href = 'mobile.html';
+        }
+
         // Alert System for Multiple Independent Windows
         class AlertWindow {
             constructor(message, title = "Application Alert") {
@@ -1289,7 +1294,7 @@
                 this.isOpen = false;
                 this.isActive = false;
                 this.offset = 0; // For staggering multiple alerts
-                
+
                 this.createWindow();
             }
 
@@ -1374,10 +1379,10 @@
                 // Calculate position for staggered alerts
                 const existingAlerts = document.querySelectorAll('.alert-window[style*="display: flex"]');
                 const alertCount = existingAlerts.length;
-                
+
                 // Stagger position based on number of existing alerts
                 const staggerOffset = alertCount * 30; // 30px offset per alert
-                
+
                 // Center with stagger offset
                 this.windowElement.style.top = `calc(50% + ${staggerOffset}px)`;
                 this.windowElement.style.left = `calc(50% + ${staggerOffset}px)`;
@@ -1386,14 +1391,14 @@
                 this.windowElement.style.display = 'flex';
                 this.isOpen = true;
                 this.bringToFront();
-                
+
                 // Auto-close after 10 seconds
                 this.autoCloseTimer = setTimeout(() => {
                     if (this.isOpen) {
                         this.close();
                     }
                 }, 10000);
-                
+
                 return this;
             }
 
@@ -1403,12 +1408,12 @@
                 }
                 this.isOpen = false;
                 this.isActive = false;
-                
+
                 // Clear auto-close timer
                 if (this.autoCloseTimer) {
                     clearTimeout(this.autoCloseTimer);
                 }
-                
+
                 // Remove from DOM after a delay
                 setTimeout(() => {
                     if (this.windowElement && this.windowElement.parentNode) {
@@ -1878,7 +1883,7 @@
             bringToFront() {
                 // First, deactivate all other apps
                 this.appManager.deactivateAllApps();
-                
+
                 // Activate this app
                 this.isActive = true;
 
@@ -1991,7 +1996,7 @@
                 this.apps.forEach(app => app.close());
             }
         }
-        
+
         // Start Menu System
         class StartMenu {
             constructor(appManager) {

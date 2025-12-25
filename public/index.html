@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoltaOS</title>
+    <title>VoltaOS Desktop</title>
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -1545,9 +1545,9 @@
                 updateProgress('System Clock');
 
                 // Register apps
-                const horadrimAI = window.appManager.registerApp({
-                    id: 'horadrimai',
-                    title: 'HoradrimAI',
+                const drifterAI = window.appManager.registerApp({
+                    id: 'drifterai',
+                    title: 'Drifter',
                     iconUrl: 'https://assets.voltaccept.com/img/ai/icon.png',
                     url: 'https://www.voltaccept.com/drifter/',
                     windowPosition: { top: 100, left: 100 },
@@ -1566,9 +1566,9 @@
                             loadingScreen.style.display = 'none';
 
                             // Show a welcome alert using the new system
-                            if (horadrimAI) {
+                            if (drifterAI) {
                                 setTimeout(() => {
-                                    showAlert('Welcome to VoltaOS Desktop Environment. Double-click the HoradrimAI icon to begin.', 'Welcome');
+                                    showAlert('Welcome to VoltaOS Desktop Environment. Double-click the Drifter icon to begin.', 'Welcome');
                                 }, 500);
                             }
                         }, 800);

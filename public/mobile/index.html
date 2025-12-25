@@ -105,6 +105,53 @@
             border-radius: 2px;
             transition: width 0.3s ease;
         }
+
+        /* Mobile Screen */
+        #mobile-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(48, 25, 52, 0.98);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .mobile-screen-content {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .mobile-screen-logo {
+            margin-bottom: 30px;
+        }
+
+        .mobile-screen-logo i {
+            font-size: 80px;
+            color: rgba(134, 11, 249, 0.9);
+            filter: drop-shadow(0 0 10px rgba(134, 11, 249, 0.4));
+        }
+
+        .mobile-screen-text h1 {
+            font-size: 32px;
+            font-weight: 300;
+            background: linear-gradient(135deg, #e4b1ef 0%, #860bf9 50%, #4902ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .mobile-screen-text p {
+            color: rgba(228, 177, 239, 0.8);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -127,10 +174,17 @@
         </div>
     </div>
 
-    <!-- Home Screen with App Grid -->
-    <div id="home-screen">
-            <i class="bi bi-app-indicator" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-            <div>VoltaOS Mobile is Under Construction<br/>Please Check Back Later.</div>
+    <!-- Mobile Screen Screen -->
+    <div id="mobile-screen">
+        <div class="mobile-screen-content">
+            <div class="mobile-screen-logo">
+                <i class="bi bi-app-indicator"></i>
+            </div>
+            <div class="mobile-screen-text">
+                <h1>VoltaOS Mobile</h1>
+                <p>Under Construction</p>
+            </div>
+        </div>
     </div>
 
     <script>

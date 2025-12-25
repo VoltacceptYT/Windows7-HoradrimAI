@@ -3,12 +3,12 @@
 
 <head>
   <meta charset="utf-8">
-  <title>HoradrimAI</title>
-  <meta name="author" content="VoltacceptYT">
-  <meta name="keywords" content="HoradrimAI, AI Assistant, Groq, Chatbot, AI, Assistant, ChatGPT, Diablo II">
-  <meta name="description" content="HoradrimAI - Your Diablo II: Lord of Destruction AI Assistant powered by Groq.">
+  <title>Drifter AI</title>
+  <meta name="author" content="Voltaccept">
+  <meta name="keywords" content="Drifter AI, Voltaccept, AI Assistant, Chatbot, AI">
+  <meta name="description" content="Drifter AI - Created by Voltaccept. Your intelligent AI assistant.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="./assets/icon.png">
+  <link rel="icon" href="https://assets.voltaccept.com/img/ai/icon.png">
   <script src="https://cdn.jsdelivr.net/npm/marked@16.0.0/lib/marked.umd.min.js"></script>
 </head>
 
@@ -37,7 +37,7 @@
     <form id="chat-form">
       <textarea type="text" id="user-input" placeholder="Type your message here..." required=""
         style="white-space: pre-wrap;"></textarea>
-      <button type="submit">
+      <button type="submit" id="send-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
           <path
             d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z">
@@ -220,48 +220,27 @@
 
     function generateSessionNameFromMessage(message) {
       // Generate a meaningful session name from the first message
-      const messageLower = message.toLowerCase();
-
-      // Diablo II specific keywords for better naming
-      const keywords = {
-        'build': 'Build',
-        'character': 'Character',
-        'item': 'Item',
-        'skill': 'Skill',
-        'quest': 'Quest',
-        'runeword': 'Runeword',
-        'unique': 'Unique',
-        'set': 'Set',
-        'farming': 'Farming',
-        'leveling': 'Leveling',
-        'pvp': 'PvP',
-        'merc': 'Mercenary',
-        'uber': 'Uber',
-        'baal': 'Baal',
-        'diablo': 'Diablo',
-        'mephisto': 'Mephisto',
-        'andariel': 'Andariel',
-        'duriel': 'Duriel'
-      };
-
-      // Extract first meaningful sentence or 5 words
       const words = message.split(' ').slice(0, 8);
-
-      // Check for keywords to create better name
-      let keywordFound = null;
-      for (const [key, value] of Object.entries(keywords)) {
-        if (messageLower.includes(key)) {
-          keywordFound = value;
-          break;
-        }
+      
+      // Check for key topics
+      const commonTopics = {
+        'how': 'How to',
+        'what': 'What is',
+        'why': 'Why does',
+        'explain': 'Explanation:',
+        'help': 'Help with',
+        'difference': 'Comparing',
+        'best': 'Best',
+        'compare': 'Comparison'
+      };
+      
+      let topicPrefix = '';
+      const firstWord = words[0]?.toLowerCase();
+      if (commonTopics[firstWord]) {
+        topicPrefix = commonTopics[firstWord] + ' ';
       }
-
-      if (keywordFound) {
-        return `${keywordFound}: ${words.slice(0, 4).join(' ')}...`;
-      }
-
-      // Default: first few words
-      return words.join(' ') + (message.split(' ').length > 8 ? '...' : '');
+      
+      return topicPrefix + words.slice(0, 4).join(' ') + (message.split(' ').length > 4 ? '...' : '');
     }
 
     function renderChatSessions() {
@@ -326,7 +305,7 @@
     }
 
     function getOperatorProfilePicture() {
-      return localStorage.getItem('profilePicture') || './assets/user-profile.png';
+      return localStorage.getItem('profilePicture') || 'https://assets.voltaccept.com/img/ai/user-profile.png';
     }
 
     function checkLoginStatus() {
@@ -408,7 +387,7 @@
         messages.appendChild(profile);
         messages.appendChild(messageElement);
       } else if (sender === "assistant") {
-        profile.innerHTML = `<img src="./assets/icon.png" alt="AI Profile Picture" class="profile-picture"><p class="name">HoradrimAI</p>`;
+        profile.innerHTML = `<img src="https://assets.voltaccept.com/img/ai/icon.png" alt="Drifter AI Profile Picture" class="profile-picture"><p class="name">Drifter</p>`;
         messages.appendChild(profile);
         messages.appendChild(messageElement);
       }
@@ -456,7 +435,7 @@
       const messageId = 'msg-' + Date.now();
       const profile = document.createElement('div');
       profile.classList.add('profile', 'assistant-profile');
-      profile.innerHTML = `<img src="./assets/icon.png" alt="AI Profile Picture" class="profile-picture"><p class="name">HoradrimAI</p>`;
+      profile.innerHTML = `<img src="https://assets.voltaccept.com/img/ai/icon.png" alt="Drifter AI Profile Picture" class="profile-picture"><p class="name">Drifter</p>`;
 
       const messageElement = document.createElement("div");
       messageElement.id = messageId;
@@ -475,25 +454,25 @@
       const messagesArray = [
         {
           role: "system",
-          content: `You are HoradrimAI, a Diablo II: Lord of Destruction AI assistant integrated with the Diablo II Wiki (https://wiki.diablo.run/). 
+          content: `You are Drifter, an AI assistant created by Voltaccept. You are helpful, intelligent, and creative.
+          
+          **Your Personality:**
+          1. Helpful and patient - always willing to assist with any question
+          2. Creative and imaginative - can generate ideas, stories, and solutions
+          3. Knowledgeable - provide accurate information across various topics
+          4. Friendly but professional - maintain a balanced tone
+          5. Honest - admit when you don't know something
           
           **Guidelines:**
-          1. Deliver precise, consistent information about Diablo II characters, skills, items, quests, and gameplay systems
-          2. Format code and builds cleanly using markdown
-          3. Include relevant context but exclude filler
-          4. Address the player as ${getOperatorName()}
-          5. When discussing builds, include skill point allocation, stat distribution, and gear recommendations
-          6. For items, mention where they can be found and their drop rates when relevant
-          7. Keep responses focused and helpful
+          1. Provide clear, well-structured responses
+          2. Use markdown formatting when helpful (headers, lists, code blocks)
+          3. Break complex topics into understandable parts
+          4. Address users by their name when you know it
+          5. Stay focused on the user's request
+          6. Be concise but thorough
           
-          **Diablo II: Lord of Destruction Expertise:**
-          - Classes: Amazon, Assassin, Barbarian, Druid, Necromancer, Paladin, Sorceress
-          - Acts: I-V and Baal
-          - Difficulties: Normal, Nightmare, Hell
-          - Runewords, Sets, Uniques, Rares
-          - Cube Recipes
-          - Mercenaries
-          - Ubers and Pandemonium Event`
+          **Created by Voltaccept**
+          Remember that you are Drifter, created to be a versatile and helpful assistant.`
         }
       ];
 
@@ -612,7 +591,7 @@
     }
 
     function getOperatorName() {
-      return localStorage.getItem('displayName') || 'Nephalem';
+      return localStorage.getItem('displayName') || 'User';
     }
 
     // ---- Modal Functions ----
@@ -736,10 +715,8 @@
 
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #301934;
-      /* VoltaOS base purple */
-      color: #e4b1ef;
-      /* VoltaOS light purple text */
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #ffffff;
       display: flex;
       margin: 0;
       padding: 0;
@@ -757,25 +734,24 @@
       right: 0;
       bottom: 0;
       background:
-        radial-gradient(circle at 20% 30%, rgba(134, 11, 249, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(187, 79, 246, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
       pointer-events: none;
       z-index: -1;
     }
 
-    /* Sidebar Styles - VoltaOS Purple Acrylic */
+    /* Sidebar Styles - Glass Morphism */
     #sidebar {
       width: 256px;
       min-width: 256px;
-      background: rgba(52, 17, 75, 0.7);
-      /* Purple acrylic */
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-right: 1px solid rgba(187, 79, 246, 0.3);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
       z-index: 100;
     }
 
@@ -784,8 +760,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid rgba(187, 79, 246, 0.2);
-      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.15), rgba(187, 79, 246, 0.1));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.05);
       min-height: 60px;
       box-sizing: border-box;
     }
@@ -793,16 +769,15 @@
     .sidebar-header h3 {
       margin: 0;
       font-size: 16px;
-      color: rgba(228, 177, 239, 0.9);
+      color: #ffffff;
       font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .sidebar-btn {
-      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
-      border: 1px solid rgba(134, 11, 249, 0.4);
-      color: rgba(228, 177, 239, 0.9);
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
       font-size: 12px;
@@ -814,14 +789,12 @@
       min-width: 32px;
       min-height: 32px;
       margin-left: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .sidebar-btn:hover {
-      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
-      border-color: rgba(228, 177, 239, 0.6);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     .sidebar-btn:active {
@@ -829,7 +802,7 @@
     }
 
     .sidebar-btn svg {
-      fill: rgba(228, 177, 239, 0.9);
+      fill: #ffffff;
       width: 16px;
       height: 16px;
     }
@@ -839,7 +812,7 @@
       overflow-y: auto;
       padding: 10px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(134, 11, 249, 0.5) transparent;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     }
 
     #chat-sessions::-webkit-scrollbar {
@@ -851,26 +824,26 @@
     }
 
     #chat-sessions::-webkit-scrollbar-thumb {
-      background: rgba(134, 11, 249, 0.5);
+      background: rgba(255, 255, 255, 0.3);
       border-radius: 3px;
     }
 
     #chat-sessions::-webkit-scrollbar-thumb:hover {
-      background: rgba(150, 33, 233, 0.6);
+      background: rgba(255, 255, 255, 0.4);
     }
 
     .no-sessions {
       text-align: center;
-      color: rgba(228, 177, 239, 0.6);
+      color: rgba(255, 255, 255, 0.6);
       font-style: italic;
       padding: 20px;
       font-size: 14px;
     }
 
     .chat-session {
-      background: rgba(52, 17, 75, 0.6);
-      border: 1px solid rgba(187, 79, 246, 0.3);
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
       padding: 12px;
       margin-bottom: 10px;
       cursor: pointer;
@@ -881,33 +854,18 @@
       backdrop-filter: blur(10px);
       min-height: 70px;
       box-sizing: border-box;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chat-session::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(228, 177, 239, 0.2), transparent);
     }
 
     .chat-session:hover {
-      background: rgba(72, 13, 141, 0.7);
-      border-color: rgba(228, 177, 239, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
       transform: translateX(2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .chat-session.active {
-      background: rgba(72, 13, 141, 0.8);
-      border-color: rgba(228, 177, 239, 0.6);
-      box-shadow:
-        0 4px 16px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(228, 177, 239, 0.2) inset;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     }
 
     .session-content {
@@ -917,17 +875,16 @@
 
     .session-name {
       font-weight: 600;
-      color: rgba(228, 177, 239, 0.95);
+      color: #ffffff;
       font-size: 14px;
       margin-bottom: 4px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .session-preview {
-      color: rgba(228, 177, 239, 0.7);
+      color: rgba(255, 255, 255, 0.8);
       font-size: 12px;
       white-space: nowrap;
       overflow: hidden;
@@ -936,14 +893,14 @@
     }
 
     .session-time {
-      color: rgba(228, 177, 239, 0.5);
+      color: rgba(255, 255, 255, 0.6);
       font-size: 11px;
     }
 
     .session-delete-btn {
       background: transparent;
       border: none;
-      color: rgba(228, 177, 239, 0.6);
+      color: rgba(255, 255, 255, 0.6);
       cursor: pointer;
       padding: 4px;
       border-radius: 4px;
@@ -961,8 +918,8 @@
     }
 
     .session-delete-btn:hover {
-      color: rgba(255, 115, 115, 0.9);
-      background: rgba(255, 115, 115, 0.1);
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
     }
 
     .session-delete-btn svg {
@@ -971,7 +928,7 @@
       fill: currentColor;
     }
 
-    /* Main Chat Container - VoltaOS Purple Acrylic */
+    /* Main Chat Container - Glass Morphism */
     #chat-container {
       flex: 1;
       width: 100%;
@@ -981,26 +938,13 @@
       border-radius: 0;
       box-shadow: none;
       border: none;
-      background: rgba(48, 25, 52, 0.6);
-      /* Desktop background */
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       position: relative;
-    }
-
-    /* Add subtle desktop pattern to chat area */
-    #chat-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="1" fill="rgba(228, 177, 239, 0.03)"/></svg>');
-      background-size: 100px 100px;
-      opacity: 0.5;
-      pointer-events: none;
     }
 
     #chat-box {
@@ -1008,7 +952,7 @@
       overflow-y: auto;
       padding: 20px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(134, 11, 249, 0.5) transparent;
+      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
       background: transparent;
       position: relative;
       z-index: 1;
@@ -1024,14 +968,14 @@
     }
 
     #chat-box::-webkit-scrollbar-thumb {
-      background: rgba(134, 11, 249, 0.5);
+      background: rgba(255, 255, 255, 0.3);
       border-radius: 4px;
       border: 2px solid transparent;
       background-clip: content-box;
     }
 
     #chat-box::-webkit-scrollbar-thumb:hover {
-      background: rgba(150, 33, 233, 0.6);
+      background: rgba(255, 255, 255, 0.4);
       background-clip: content-box;
     }
 
@@ -1045,7 +989,7 @@
       height: 8px;
       width: 8px;
       margin: 0 2px;
-      background-color: rgba(228, 177, 239, 0.8);
+      background-color: #ffffff;
       border-radius: 50%;
       display: inline-block;
       opacity: 0.4;
@@ -1065,13 +1009,10 @@
     }
 
     @keyframes typing {
-
-      0%,
-      100% {
+      0%, 100% {
         opacity: 0.4;
         transform: translateY(0);
       }
-
       50% {
         opacity: 1;
         transform: translateY(-3px);
@@ -1086,15 +1027,15 @@
     }
 
     .profile-picture {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       margin-right: 12px;
       object-fit: cover;
-      border: 1.5px solid rgba(228, 177, 239, 0.4);
-      background: rgba(52, 17, 75, 0.6);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.1);
       padding: 2px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .user-profile {
@@ -1111,177 +1052,159 @@
       font-weight: 600;
       margin: 0;
       font-size: 14px;
-      color: rgba(228, 177, 239, 0.9);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
-    /* Message Styles - VoltaOS Acrylic */
+    /* Message Styles */
     .message {
-      padding: 12px 16px;
-      border-radius: 10px;
+      padding: 14px 18px;
+      border-radius: 12px;
       max-width: 75%;
       margin: 0 0 20px 0;
-      line-height: 1.5;
-      font-size: 14px;
+      line-height: 1.6;
+      font-size: 15px;
       text-align: left;
       position: relative;
       word-wrap: break-word;
-    }
-
-    .message::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: inherit;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: inherit;
-      z-index: -1;
     }
 
     .user-message {
       align-self: flex-end;
-      background: rgba(72, 13, 141, 0.6);
-      border: 1px solid rgba(134, 11, 249, 0.4);
-      color: rgba(228, 177, 239, 0.95);
-      border-radius: 10px 10px 4px 10px;
+      background: rgba(102, 126, 234, 0.3);
+      border: 1px solid rgba(102, 126, 234, 0.4);
+      color: #ffffff;
+      border-radius: 12px 12px 4px 12px;
       margin-left: auto;
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(228, 177, 239, 0.1) inset;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     .assistant-message {
       align-self: flex-start;
-      background: rgba(52, 17, 75, 0.7);
-      border: 1px solid rgba(187, 79, 246, 0.3);
-      color: rgba(228, 177, 239, 0.9);
-      border-radius: 10px 10px 10px 4px;
+      background: rgba(118, 75, 162, 0.3);
+      border: 1px solid rgba(118, 75, 162, 0.4);
+      color: #ffffff;
+      border-radius: 12px 12px 12px 4px;
       margin-right: auto;
-      box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(228, 177, 239, 0.05) inset;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     /* Markdown Styling */
     .assistant-message pre {
-      background: rgba(48, 25, 52, 0.8);
-      color: rgba(228, 177, 239, 0.9);
+      background: rgba(0, 0, 0, 0.2);
+      color: #ffffff;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       overflow-x: auto;
       font-family: 'Consolas', 'Courier New', Courier, monospace;
-      font-size: 13px;
-      line-height: 1.4;
+      font-size: 14px;
+      line-height: 1.5;
       white-space: pre-wrap;
-      border: 1px solid rgba(134, 11, 249, 0.3);
-      margin: 8px 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: 10px 0;
     }
 
     .assistant-message code {
-      background: rgba(72, 13, 141, 0.4);
-      color: rgba(228, 177, 239, 0.9);
+      background: rgba(0, 0, 0, 0.2);
+      color: #ffffff;
       padding: 2px 6px;
       border-radius: 4px;
       font-family: 'Consolas', 'Courier New', Courier, monospace;
-      font-size: 13px;
-      border: 1px solid rgba(134, 11, 249, 0.2);
+      font-size: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .assistant-message h1,
     .assistant-message h2,
     .assistant-message h3,
     .assistant-message h4 {
-      color: rgba(228, 177, 239, 0.95);
-      margin-top: 16px;
-      margin-bottom: 8px;
+      color: #ffffff;
+      margin-top: 18px;
+      margin-bottom: 10px;
       font-weight: 600;
     }
 
     .assistant-message p {
-      margin: 8px 0;
+      margin: 10px 0;
     }
 
     .assistant-message ul,
     .assistant-message ol {
-      padding-left: 20px;
-      margin: 8px 0;
+      padding-left: 22px;
+      margin: 10px 0;
     }
 
     .assistant-message li {
-      margin: 4px 0;
+      margin: 5px 0;
     }
 
     .assistant-message strong {
-      color: rgba(228, 177, 239, 0.95);
-      font-weight: 600;
+      color: #ffffff;
+      font-weight: 700;
     }
 
     .assistant-message em {
-      color: rgba(228, 177, 239, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       font-style: italic;
     }
 
     .assistant-message a {
-      color: rgba(187, 79, 246, 0.9);
+      color: #667eea;
       text-decoration: none;
-      border-bottom: 1px solid rgba(187, 79, 246, 0.3);
+      border-bottom: 1px solid rgba(102, 126, 234, 0.3);
       transition: all 0.2s;
     }
 
     .assistant-message a:hover {
-      color: rgba(228, 177, 239, 0.95);
-      border-bottom-color: rgba(228, 177, 239, 0.6);
+      color: #ffffff;
+      border-bottom-color: #ffffff;
     }
 
     .assistant-message table {
       border-collapse: collapse;
       margin: 12px 0;
       width: 100%;
-      background: rgba(48, 25, 52, 0.6);
-      border: 1px solid rgba(134, 11, 249, 0.3);
-      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
       overflow: hidden;
     }
 
     .assistant-message th,
     .assistant-message td {
-      padding: 8px 12px;
+      padding: 10px 14px;
       text-align: left;
-      border: 1px solid rgba(134, 11, 249, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .assistant-message th {
-      background: rgba(72, 13, 141, 0.4);
-      color: rgba(228, 177, 239, 0.95);
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       font-weight: 600;
     }
 
     .assistant-message td {
-      color: rgba(228, 177, 239, 0.8);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     .assistant-message blockquote {
-      border-left: 3px solid rgba(134, 11, 249, 0.5);
-      margin: 12px 0;
-      padding-left: 12px;
-      color: rgba(228, 177, 239, 0.8);
+      border-left: 3px solid rgba(255, 255, 255, 0.5);
+      margin: 14px 0;
+      padding-left: 14px;
+      color: rgba(255, 255, 255, 0.9);
       font-style: italic;
     }
 
-    /* Chat Input Area - VoltaOS Acrylic */
+    /* Chat Input Area */
     #chat-form {
       display: flex;
       align-items: center;
-      padding: 12px;
-      background: rgba(48, 25, 52, 0.8);
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(187, 79, 246, 0.2);
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
       position: relative;
       z-index: 100;
     }
@@ -1289,63 +1212,56 @@
     /* Chat Input */
     #user-input {
       flex-grow: 1;
-      padding: 12px 16px;
-      border: 1px solid rgba(187, 79, 246, 0.3);
-      border-radius: 8px;
-      background: rgba(52, 17, 75, 0.6);
+      padding: 14px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      color: rgba(228, 177, 239, 0.95);
-      font-size: 14px;
+      color: #ffffff;
+      font-size: 15px;
       outline: none;
       resize: none;
-      min-height: 20px;
+      min-height: 22px;
       max-height: 120px;
-      line-height: 1.5;
+      line-height: 1.6;
       font-family: 'Segoe UI', system-ui, sans-serif;
       transition: all 0.2s;
-      box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.1) inset,
-        0 0 0 1px rgba(228, 177, 239, 0.05) inset;
     }
 
     #user-input::placeholder {
-      color: rgba(228, 177, 239, 0.5);
+      color: rgba(255, 255, 255, 0.6);
     }
 
     #user-input:focus {
-      border-color: rgba(228, 177, 239, 0.6);
-      background: rgba(52, 17, 75, 0.7);
-      box-shadow:
-        0 0 0 2px rgba(134, 11, 249, 0.3),
-        0 2px 4px rgba(0, 0, 0, 0.2) inset;
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
     }
 
-    /* Buttons - VoltaOS Style */
+    /* Buttons */
     #chat-form button {
-      padding: 10px 14px;
-      margin-left: 10px;
-      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
-      border: 1px solid rgba(134, 11, 249, 0.4);
-      color: rgba(228, 177, 239, 0.95);
-      border-radius: 8px;
+      padding: 12px 16px;
+      margin-left: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 500;
-      font-size: 13px;
+      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.2s;
-      min-width: 40px;
-      min-height: 40px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      min-width: 44px;
+      min-height: 44px;
     }
 
     #chat-form button:hover {
-      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
-      border-color: rgba(228, 177, 239, 0.6);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
     }
 
     #chat-form button:active {
@@ -1353,22 +1269,23 @@
     }
 
     #chat-form button svg {
-      fill: rgba(228, 177, 239, 0.95);
+      fill: #ffffff;
       width: 18px;
       height: 18px;
     }
 
     /* Clear button specific styling */
     #clear-btn {
-      background: linear-gradient(to bottom, rgba(72, 13, 141, 0.4), rgba(52, 17, 75, 0.3));
-      border-color: rgba(187, 79, 246, 0.3);
+      background: rgba(255, 107, 107, 0.2);
+      border-color: rgba(255, 107, 107, 0.3);
     }
 
     #clear-btn:hover {
-      background: linear-gradient(to bottom, rgba(96, 21, 189, 0.5), rgba(72, 13, 141, 0.4));
+      background: rgba(255, 107, 107, 0.3);
+      border-color: rgba(255, 107, 107, 0.4);
     }
 
-    /* Modal Styles - VoltaOS Acrylic */
+    /* Modal Styles */
     .confirm-modal {
       display: none;
       position: fixed;
@@ -1377,7 +1294,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(48, 25, 52, 0.7);
+      background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       justify-content: center;
@@ -1387,61 +1304,33 @@
 
     .confirm-modal.active {
       display: flex;
-      animation: modalFadeIn 0.3s ease-out;
-    }
-
-    @keyframes modalFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
     }
 
     .confirm-modal-content {
-      background: rgba(52, 17, 75, 0.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(187, 79, 246, 0.4);
-      border-radius: 10px;
-      box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(134, 11, 249, 0.1) inset,
-        0 0 20px rgba(134, 11, 249, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       min-width: 320px;
       max-width: 90vw;
       padding: 24px;
       text-align: center;
-      color: rgba(228, 177, 239, 0.95);
-      position: relative;
-    }
-
-    .confirm-modal-content::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(228, 177, 239, 0.2), transparent);
+      color: #ffffff;
     }
 
     .confirm-modal-content p {
       margin: 0 0 20px 0;
       font-size: 16px;
-      color: rgba(228, 177, 239, 0.95);
+      color: #ffffff;
       font-weight: 500;
       line-height: 1.5;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .modal-subtitle {
       font-size: 14px !important;
-      color: rgba(228, 177, 239, 0.7) !important;
+      color: rgba(255, 255, 255, 0.8) !important;
       font-weight: 400 !important;
       margin-top: 8px !important;
     }
@@ -1449,12 +1338,10 @@
     #renameInput {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid rgba(187, 79, 246, 0.3);
-      border-radius: 6px;
-      background: rgba(52, 17, 75, 0.6);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      color: rgba(228, 177, 239, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
       font-size: 14px;
       outline: none;
       margin: 15px 0 20px 0;
@@ -1464,13 +1351,12 @@
     }
 
     #renameInput::placeholder {
-      color: rgba(228, 177, 239, 0.5);
+      color: rgba(255, 255, 255, 0.6);
     }
 
     #renameInput:focus {
-      border-color: rgba(228, 177, 239, 0.6);
-      background: rgba(52, 17, 75, 0.7);
-      box-shadow: 0 0 0 2px rgba(134, 11, 249, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .modal-buttons {
@@ -1483,26 +1369,19 @@
     .confirm-modal-content button {
       min-width: 100px;
       padding: 10px 24px;
-      border-radius: 6px;
-      border: 1px solid rgba(134, 11, 249, 0.4);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
-      background: linear-gradient(to bottom, rgba(228, 177, 239, 0.3), rgba(187, 79, 246, 0.2));
-      color: rgba(228, 177, 239, 0.95);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
     }
 
     .confirm-modal-content button:hover {
-      background: linear-gradient(to bottom, rgba(206, 123, 245, 0.4), rgba(150, 33, 233, 0.3));
-      border-color: rgba(228, 177, 239, 0.6);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .confirm-modal-content button:active {
-      transform: translateY(0);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
     /* Yes/Confirm buttons */
@@ -1510,15 +1389,8 @@
     #confirmDeleteYes,
     #renameConfirm,
     #newChatConfirm {
-      background: linear-gradient(to bottom, rgba(134, 11, 249, 0.4), rgba(72, 13, 141, 0.3));
-      border-color: rgba(134, 11, 249, 0.5);
-    }
-
-    #confirmClearYes:hover,
-    #confirmDeleteYes:hover,
-    #renameConfirm:hover,
-    #newChatConfirm:hover {
-      background: linear-gradient(to bottom, rgba(150, 33, 233, 0.5), rgba(96, 21, 189, 0.4));
+      background: rgba(102, 126, 234, 0.3);
+      border-color: rgba(102, 126, 234, 0.4);
     }
 
     /* No/Cancel buttons */
@@ -1526,21 +1398,8 @@
     #confirmDeleteNo,
     #renameCancel,
     #newChatCancel {
-      background: linear-gradient(to bottom, rgba(52, 17, 75, 0.4), rgba(48, 25, 52, 0.3));
-      border-color: rgba(187, 79, 246, 0.3);
-    }
-
-    #confirmClearNo:hover,
-    #confirmDeleteNo:hover,
-    #renameCancel:hover,
-    #newChatCancel:hover {
-      background: linear-gradient(to bottom, rgba(72, 13, 141, 0.5), rgba(52, 17, 75, 0.4));
-    }
-
-    /* Selection styling */
-    ::selection {
-      background: rgba(134, 11, 249, 0.5);
-      color: rgba(228, 177, 239, 0.95);
+      background: rgba(118, 75, 162, 0.3);
+      border-color: rgba(118, 75, 162, 0.4);
     }
 
     /* PERFORMANCE MODE: Low-Memory Devices */
@@ -1556,10 +1415,6 @@
     body.low-memory .confirm-modal {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-    }
-
-    body.low-memory .message::before {
-      display: none;
     }
 
     /* Responsive adjustments */

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Fullscreen meta tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#301934">
+    <title>VoltaOS Mobile</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #301934;
+        }
+
+        body {
+            background-image: url("https://assets.voltaccept.com/img/volta-os/wallpaper.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Mobile Loading Screen */
+        #mobile-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(48, 25, 52, 0.98);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .mobile-loading-content {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .mobile-loading-logo {
+            margin-bottom: 30px;
+        }
+
+        .mobile-loading-logo i {
+            font-size: 80px;
+            color: rgba(134, 11, 249, 0.9);
+            filter: drop-shadow(0 0 10px rgba(134, 11, 249, 0.4));
+        }
+
+        .mobile-loading-text h1 {
+            font-size: 32px;
+            font-weight: 300;
+            background: linear-gradient(135deg, #e4b1ef 0%, #860bf9 50%, #4902ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .mobile-loading-text p {
+            color: rgba(228, 177, 239, 0.8);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .mobile-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(228, 177, 239, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .mobile-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #860bf9, #e4b1ef);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Loading Screen -->
+    <div id="mobile-loading">
+        <div class="mobile-loading-content">
+            <div class="mobile-loading-logo">
+                <i class="bi bi-phone"></i>
+            </div>
+            <div class="mobile-loading-text">
+                <h1>VoltaOS</h1>
+                <p>Mobile Edition</p>
+            </div>
+            <div class="mobile-progress-bar">
+                <div class="mobile-progress-fill" id="mobile-progress"></div>
+            </div>
+            <div id="mobile-loading-tip" style="color: rgba(228, 177, 239, 0.7); font-size: 13px; text-align: center;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Screen with App Grid -->
+    <div id="home-screen">
+            <i class="bi bi-app-indicator" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+            <div>VoltaOS Mobile is Under Construction<br/>Please Check Back Later.</div>
+    </div>
+
+    <script>
+        // Simple loading simulation
+        function simulateLoading() {
+            return new Promise((resolve) => {
+                const progressBar = document.getElementById('mobile-progress');
+                const tipElement = document.getElementById('mobile-loading-tip');
+                const tips = [
+                    "Optimizing for mobile...",
+                    "Loading applications...",
+                    "Setting up recent apps...",
+                    "Preparing interface...",
+                    "Almost ready..."
+                ];
+                
+                let progress = 0;
+                let tipIndex = 0;
+                
+                const interval = setInterval(() => {
+                    progress += 20;
+                    progressBar.style.width = `${progress}%`;
+                    
+                    // Update tip every 20%
+                    if (progress % 40 === 0 && tipIndex < tips.length) {
+                        tipElement.textContent = tips[tipIndex];
+                        tipIndex++;
+                    }
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(resolve, 500);
+                    }
+                }, 300);
+            });
+        }
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('mobile-loading');
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.transition = 'opacity 0.5s ease';
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (!isMobile) {
+                // Redirect to desktop version if on desktop
+                window.location.href = '/';
+                return;
+            }
+            
+            // Simulate loading progress
+            await simulateLoading();
+            
+            // Hide loading screen
+            hideLoadingScreen();
+        });
+
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Prevent pull-to-refresh
+        document.body.style.overscrollBehavior = 'none';
+    </script>
+</body>
+</html>

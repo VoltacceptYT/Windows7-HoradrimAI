@@ -710,7 +710,7 @@
   </script>
 
   <style>
-    /* VoltaOS Desktop Theme for DrifterAI */
+    /* VoltaOS Theme for DrifterAI - Colors Only */
 
     /* Base Theme Colors */
     :root {
@@ -722,78 +722,68 @@
       --volta-glass: rgba(52, 17, 75, 0.85);
     }
 
-    /* Body - Match VoltaOS Background */
+    /* Body - Keep layout, change colors */
     body {
       background: #301934 !important;
       background-image: url("https://assets.voltaccept.com/img/volta-os/wallpaper.jpg") !important;
       background-repeat: no-repeat !important;
       background-size: cover !important;
       color: rgba(228, 177, 239, 0.95) !important;
-      font-family: 'Segoe UI', sans-serif !important;
     }
 
+    /* Remove original gradient backgrounds */
     body::before {
-      background: none !important;
+      display: none !important;
     }
 
-    /* Sidebar - Glass Morphism */
+    /* Sidebar - Purple glass effect */
     #sidebar {
-      background: rgba(52, 17, 75, 0.75) !important;
+      background: rgba(52, 17, 75, 0.85) !important;
       backdrop-filter: blur(20px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border-right: 1px solid rgba(187, 79, 246, 0.3) !important;
-      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3) !important;
+      border-right: 1px solid rgba(187, 79, 246, 0.4) !important;
     }
 
     .sidebar-header {
-      background: linear-gradient(to bottom,
-          rgba(228, 177, 239, 0.08) 0%,
-          rgba(187, 79, 246, 0.05) 50%,
-          rgba(134, 11, 249, 0.02) 100%) !important;
-      border-bottom: 1px solid rgba(187, 79, 246, 0.2) !important;
-      backdrop-filter: blur(10px) !important;
+      background: rgba(52, 17, 75, 0.9) !important;
+      border-bottom: 1px solid rgba(187, 79, 246, 0.3) !important;
     }
 
     .sidebar-header h3 {
       color: rgba(228, 177, 239, 0.95) !important;
-      font-weight: 600 !important;
     }
 
+    /* Sidebar button - Purple glass */
     .sidebar-btn {
       background: rgba(134, 11, 249, 0.2) !important;
-      border: 1px solid rgba(228, 177, 239, 0.3) !important;
+      border: 1px solid rgba(228, 177, 239, 0.2) !important;
       color: rgba(228, 177, 239, 0.9) !important;
     }
 
     .sidebar-btn:hover {
       background: rgba(134, 11, 249, 0.4) !important;
       border-color: rgba(228, 177, 239, 0.4) !important;
-      box-shadow: 0 0 12px rgba(134, 11, 249, 0.3) !important;
     }
 
-    /* Chat Sessions - Glass Cards */
+    /* Chat sessions - Purple cards */
     .chat-session {
       background: rgba(72, 13, 141, 0.4) !important;
       border: 1px solid rgba(187, 79, 246, 0.2) !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
+      color: rgba(228, 177, 239, 0.95) !important;
     }
 
     .chat-session:hover {
       background: rgba(96, 21, 189, 0.6) !important;
       border-color: rgba(228, 177, 239, 0.4) !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
     }
 
     .chat-session.active {
       background: rgba(134, 11, 249, 0.4) !important;
       border-color: rgba(228, 177, 239, 0.6) !important;
-      box-shadow: 0 0 8px rgba(134, 11, 249, 0.4) !important;
     }
 
     .session-name {
       color: rgba(228, 177, 239, 0.95) !important;
-      font-weight: 600 !important;
     }
 
     .session-preview {
@@ -805,7 +795,7 @@
     }
 
     .session-delete-btn {
-      color: rgba(228, 177, 239, 0.6) !important;
+      color: rgba(228, 177, 239, 0.7) !important;
     }
 
     .session-delete-btn:hover {
@@ -813,121 +803,45 @@
       background: rgba(255, 107, 107, 0.1) !important;
     }
 
-    /* Main Chat Container */
+    /* Main chat container - Purple glass */
     #chat-container {
       background: rgba(52, 17, 75, 0.65) !important;
       backdrop-filter: blur(20px) saturate(180%) !important;
       -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
       border: 1px solid rgba(187, 79, 246, 0.25) !important;
-      box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(228, 177, 239, 0.1),
-        inset 0 -1px 1px rgba(0, 0, 0, 0.2) !important;
     }
 
-    /* Profile Pictures */
-    .profile-picture {
-      border: 2px solid rgba(228, 177, 239, 0.3) !important;
-      background: rgba(134, 11, 249, 0.1) !important;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-    }
-
-    .name {
-      color: rgba(228, 177, 239, 0.95) !important;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
-    }
-
-    /* Messages - Glass Style */
-    .message {
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
-      border: 1px solid rgba(187, 79, 246, 0.3) !important;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-    }
-
+    /* Messages - Purple backgrounds */
     .user-message {
       background: rgba(134, 11, 249, 0.25) !important;
-      border-color: rgba(134, 11, 249, 0.4) !important;
+      border: 1px solid rgba(134, 11, 249, 0.4) !important;
       color: rgba(228, 177, 239, 0.95) !important;
     }
 
     .assistant-message {
       background: rgba(72, 13, 141, 0.4) !important;
-      border-color: rgba(187, 79, 246, 0.3) !important;
+      border: 1px solid rgba(187, 79, 246, 0.3) !important;
       color: rgba(228, 177, 239, 0.95) !important;
     }
 
-    /* Markdown Styling */
-    .assistant-message pre {
-      background: rgba(40, 10, 60, 0.6) !important;
-      border: 1px solid rgba(187, 79, 246, 0.2) !important;
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    .assistant-message code {
-      background: rgba(40, 10, 60, 0.6) !important;
-      border: 1px solid rgba(187, 79, 246, 0.2) !important;
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    .assistant-message h1,
-    .assistant-message h2,
-    .assistant-message h3,
-    .assistant-message h4 {
+    /* Profile section */
+    .name {
       color: rgba(228, 177, 239, 0.95) !important;
     }
 
-    .assistant-message strong {
-      color: rgba(228, 177, 239, 1) !important;
-    }
-
-    .assistant-message em {
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    .assistant-message a {
-      color: rgba(187, 79, 246, 0.9) !important;
-      border-bottom: 1px solid rgba(187, 79, 246, 0.3) !important;
-    }
-
-    .assistant-message a:hover {
-      color: rgba(228, 177, 239, 1) !important;
-      border-bottom-color: rgba(228, 177, 239, 0.6) !important;
-    }
-
-    .assistant-message table {
-      background: rgba(40, 10, 60, 0.6) !important;
-      border: 1px solid rgba(187, 79, 246, 0.2) !important;
-    }
-
-    .assistant-message th {
-      background: rgba(134, 11, 249, 0.2) !important;
-      color: rgba(228, 177, 239, 0.95) !important;
-    }
-
-    .assistant-message td {
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    .assistant-message blockquote {
-      border-left: 3px solid rgba(228, 177, 239, 0.5) !important;
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    /* Chat Input Area */
+    /* Chat input area - Purple glass */
     #chat-form {
       background: rgba(52, 17, 75, 0.75) !important;
-      backdrop-filter: blur(20px) !important;
-      -webkit-backdrop-filter: blur(20px) !important;
-      border-top: 1px solid rgba(187, 79, 246, 0.2) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border-top: 1px solid rgba(187, 79, 246, 0.3) !important;
     }
 
+    /* Chat input - Purple */
     #user-input {
       background: rgba(48, 25, 52, 0.6) !important;
       border: 1px solid rgba(187, 79, 246, 0.3) !important;
       color: rgba(228, 177, 239, 0.95) !important;
-      backdrop-filter: blur(10px) !important;
-      -webkit-backdrop-filter: blur(10px) !important;
     }
 
     #user-input::placeholder {
@@ -937,77 +851,31 @@
     #user-input:focus {
       border-color: rgba(228, 177, 239, 0.6) !important;
       background: rgba(48, 25, 52, 0.8) !important;
-      box-shadow: 0 0 0 2px rgba(134, 11, 249, 0.2) !important;
     }
 
-    /* Buttons - Glass Carved Style */
+    /* Buttons - Purple */
     #chat-form button {
-      background: transparent !important;
-      border: none !important;
+      background: rgba(134, 11, 249, 0.2) !important;
+      border: 1px solid rgba(228, 177, 239, 0.3) !important;
       color: rgba(228, 177, 239, 0.9) !important;
-      position: relative !important;
-      overflow: hidden !important;
-    }
-
-    #chat-form button::before {
-      content: '' !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      background: linear-gradient(135deg,
-          rgba(134, 11, 249, 0.2) 0%,
-          rgba(187, 79, 246, 0.15) 50%,
-          rgba(228, 177, 239, 0.1) 100%) !important;
-      border-radius: 10px !important;
-      z-index: -1 !important;
-    }
-
-    #chat-form button::after {
-      content: '' !important;
-      position: absolute !important;
-      top: 1px !important;
-      left: 1px !important;
-      right: 1px !important;
-      bottom: 1px !important;
-      background: rgba(52, 17, 75, 0.7) !important;
-      border-radius: 9px !important;
-      box-shadow:
-        inset 0 3px 6px rgba(0, 0, 0, 0.4),
-        inset 0 -2px 2px rgba(228, 177, 239, 0.1),
-        0 0 0 1px rgba(187, 79, 246, 0.15) !important;
-      z-index: -1 !important;
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
     }
 
     #chat-form button:hover {
-      color: rgba(228, 177, 239, 1) !important;
-      transform: translateY(-2px) !important;
+      background: rgba(134, 11, 249, 0.4) !important;
+      border-color: rgba(228, 177, 239, 0.4) !important;
     }
 
-    #chat-form button:hover::after {
-      background: rgba(72, 13, 141, 0.8) !important;
-      box-shadow:
-        inset 0 3px 6px rgba(0, 0, 0, 0.5),
-        inset 0 -2px 2px rgba(228, 177, 239, 0.15),
-        0 0 0 1px rgba(228, 177, 239, 0.25),
-        0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    #clear-btn {
+      background: rgba(255, 107, 107, 0.2) !important;
+      border: 1px solid rgba(255, 143, 143, 0.3) !important;
     }
 
-    #clear-btn::before {
-      background: linear-gradient(135deg,
-          rgba(255, 107, 107, 0.2) 0%,
-          rgba(255, 143, 143, 0.15) 50%,
-          rgba(255, 182, 182, 0.1) 100%) !important;
+    #clear-btn:hover {
+      background: rgba(255, 107, 107, 0.3) !important;
+      border-color: rgba(255, 143, 143, 0.4) !important;
     }
 
-    #clear-btn:hover::after {
-      background: rgba(141, 13, 72, 0.8) !important;
-    }
-
-    /* Modals - Glass Carved */
+    /* Modals - Purple glass */
     .confirm-modal {
       background: rgba(0, 0, 0, 0.5) !important;
       backdrop-filter: blur(20px) saturate(180%) !important;
@@ -1015,14 +883,11 @@
     }
 
     .confirm-modal-content {
-      background: rgba(52, 17, 75, 0.85) !important;
+      background: rgba(52, 17, 75, 0.95) !important;
       backdrop-filter: blur(30px) saturate(200%) !important;
       -webkit-backdrop-filter: blur(30px) saturate(200%) !important;
       border: 1px solid rgba(187, 79, 246, 0.4) !important;
-      box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(134, 11, 249, 0.1) inset,
-        0 0 30px rgba(134, 11, 249, 0.25) !important;
+      color: rgba(228, 177, 239, 0.95) !important;
     }
 
     .confirm-modal-content p {
@@ -1039,135 +904,60 @@
       color: rgba(228, 177, 239, 0.95) !important;
     }
 
+    #renameInput::placeholder {
+      color: rgba(228, 177, 239, 0.5) !important;
+    }
+
     #renameInput:focus {
       border-color: rgba(228, 177, 239, 0.6) !important;
       background: rgba(48, 25, 52, 0.8) !important;
-      box-shadow: 0 0 0 2px rgba(134, 11, 249, 0.2) !important;
     }
 
+    /* Modal buttons - Purple */
     .confirm-modal-content button {
-      background: transparent !important;
-      border: none !important;
-      position: relative !important;
-      overflow: hidden !important;
-    }
-
-    .confirm-modal-content button::before {
-      content: '' !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      background: linear-gradient(135deg,
-          rgba(134, 11, 249, 0.2) 0%,
-          rgba(187, 79, 246, 0.15) 50%,
-          rgba(228, 177, 239, 0.1) 100%) !important;
-      border-radius: 8px !important;
-      z-index: -1 !important;
-    }
-
-    .confirm-modal-content button::after {
-      content: '' !important;
-      position: absolute !important;
-      top: 1px !important;
-      left: 1px !important;
-      right: 1px !important;
-      bottom: 1px !important;
-      background: rgba(52, 17, 75, 0.7) !important;
-      border-radius: 7px !important;
-      box-shadow:
-        inset 0 3px 6px rgba(0, 0, 0, 0.4),
-        inset 0 -2px 2px rgba(228, 177, 239, 0.1),
-        0 0 0 1px rgba(187, 79, 246, 0.15) !important;
-      z-index: -1 !important;
-    }
-
-    #confirmClearYes,
-    #confirmDeleteYes,
-    #renameConfirm,
-    #newChatConfirm {
-      color: rgba(228, 177, 239, 0.9) !important;
-    }
-
-    #confirmClearNo,
-    #confirmDeleteNo,
-    #renameCancel,
-    #newChatCancel {
+      background: rgba(134, 11, 249, 0.2) !important;
+      border: 1px solid rgba(228, 177, 239, 0.3) !important;
       color: rgba(228, 177, 239, 0.9) !important;
     }
 
     .confirm-modal-content button:hover {
-      color: rgba(228, 177, 239, 1) !important;
-      transform: translateY(-2px) !important;
+      background: rgba(134, 11, 249, 0.4) !important;
+      border-color: rgba(228, 177, 239, 0.4) !important;
     }
 
-    .confirm-modal-content button:hover::after {
-      background: rgba(72, 13, 141, 0.8) !important;
-      box-shadow:
-        inset 0 3px 6px rgba(0, 0, 0, 0.5),
-        inset 0 -2px 2px rgba(228, 177, 239, 0.15),
-        0 0 0 1px rgba(228, 177, 239, 0.25),
-        0 4px 8px rgba(0, 0, 0, 0.3) !important;
-    }
-
-    /* Scrollbars */
-    #chat-sessions::-webkit-scrollbar {
-      width: 8px !important;
-    }
-
-    #chat-sessions::-webkit-scrollbar-track {
-      background: transparent !important;
-    }
-
+    /* Scrollbar styling - Purple */
     #chat-sessions::-webkit-scrollbar-thumb {
       background: rgba(134, 11, 249, 0.5) !important;
-      border-radius: 4px !important;
-      border: 2px solid transparent !important;
-      background-clip: content-box !important;
     }
 
     #chat-sessions::-webkit-scrollbar-thumb:hover {
       background: rgba(150, 33, 233, 0.6) !important;
-      background-clip: content-box !important;
-    }
-
-    #chat-box::-webkit-scrollbar {
-      width: 10px !important;
-    }
-
-    #chat-box::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.1) !important;
-      border-radius: 4px !important;
     }
 
     #chat-box::-webkit-scrollbar-thumb {
       background: rgba(134, 11, 249, 0.5) !important;
-      border-radius: 4px !important;
-      border: 2px solid transparent !important;
-      background-clip: content-box !important;
     }
 
     #chat-box::-webkit-scrollbar-thumb:hover {
       background: rgba(150, 33, 233, 0.6) !important;
-      background-clip: content-box !important;
     }
 
-    /* Typing Indicator */
+    /* Typing indicator - Purple */
     .typing-indicator span {
       background-color: rgba(228, 177, 239, 0.8) !important;
     }
 
-    /* Selection */
-    ::selection {
-      background: rgba(134, 11, 249, 0.5) !important;
-      color: rgba(228, 177, 239, 1) !important;
+    /* No sessions message */
+    .no-sessions {
+      color: rgba(228, 177, 239, 0.5) !important;
     }
 
-    /* Focus outlines */
-    :focus {
-      outline: 2px solid rgba(134, 11, 249, 0.5) !important;
-      outline-offset: 2px !important;
+    /* Low memory mode - Remove unnecessary effects */
+    body.low-memory #sidebar,
+    body.low-memory #chat-container,
+    body.low-memory .confirm-modal {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
   </style>
 </body>
